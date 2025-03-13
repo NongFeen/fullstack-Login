@@ -24,7 +24,7 @@ services:
     environment:
       # - Google_Auth=${Google_Auth}  
       # - JWT_SECRET=${JWT_SECRET}
-      - Google_Auth=771100970427-nedtad8bj9v8oreqspooausup2nl2ser.apps.googleusercontent.com
+      - Google_Auth=FF
       - JWT_SECRET=FEENFEENFEEN
     ports:
       - "5000:5000"  # Exposing port 5000 for API
