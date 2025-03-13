@@ -12,14 +12,17 @@ app.use(cors());
 
 // Database Connection
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: '172.17.0.2',
     user: 'root',
     password: '',
     database: 'auth_db'
 });
 
 db.connect(err => {
-    if (err) throw err;
+    if (err) {
+        console.error('Database connection failed:', err);
+        return;
+    }
     console.log("MySQL Connected...");
 });
 
