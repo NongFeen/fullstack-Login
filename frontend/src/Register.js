@@ -6,13 +6,16 @@ function Register() {
 
   const handleRegister = async () => {
     try {
+      console.log("trying to register");
       await axios.post('http://localhost:5000/register', user);
       alert("Registration successful! Please login.");
       window.location.href = '/login';
-    } catch {
+    } catch (error) {
+      console.error('Registration error:', error);
       alert("Registration failed. Try again.");
     }
   };
+  
 
   return (
     <div>

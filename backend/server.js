@@ -12,7 +12,7 @@ app.use(cors());
 
 // Database Connection
 const db = mysql.createConnection({
-    host: '172.17.0.2',
+    host: 'db',
     user: 'root',
     password: '',
     database: 'auth_db'
@@ -50,7 +50,7 @@ app.post('/login', (req, res) => {
         if (!await bcrypt.compare(password, user.password)) 
             return res.status(401).json({ message: 'Invalid credentials' });
         // Generate JWT token 
-        const token = jwt.sign({ id: user.id, role: user.role }, 'secret', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     });
 });
@@ -78,12 +78,12 @@ app.post('/google-login', async (req, res) => {
                     if (err) return res.status(500).send(err);
 
                     user = { id: result.insertId, username: payload.email, role: 'user' };
-                    const token = jwt.sign({ id: user.id, role: user.role }, 'secret', { expiresIn: '1h' });
+                    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
                     res.json({ token });
                 });
             } else {
                 // User exists, generate JWT token
-                const token = jwt.sign({ id: user.id, role: user.role }, 'secret', { expiresIn: '1h' });
+                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 res.json({ token });
             }
         });
@@ -97,7 +97,7 @@ app.get('/dashboard', (req, res) => {
     const token = req.headers['authorization'];
     if (!token) return res.status(403).json({ message: 'No token' });
 
-    jwt.verify(token.split(" ")[1], 'secret', (err, decoded) => {
+    jwt.verify(token.split(" ")[1], process.env.JWT_SECRET, (err, decoded) => {
         if (err) return res.status(401).json({ message: 'Unauthorized' });
         res.json({ role: decoded.role });
     });

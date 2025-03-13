@@ -1,4 +1,5 @@
 # Use official MySQL image
 FROM mariadb:10.6
 
-COPY test_data.sql /docker-entrypoint-initdb.d/
+# Copy the database dump into the container
+COPY test_data,sql /docker-entrypoint-initdb.d/

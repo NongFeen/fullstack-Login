@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # MariaDB service
+  db:
+    image: mariadb:10.6  # Use the official MariaDB image
+    container_name: Maria_DB
+    environment:
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
+      - MYSQL_DATABASE=auth_db
+    ports:
+      - "3306:3306"  # Exposing port 3306 for DB
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init-scripts:/docker-entrypoint-initdb.d  # Mount init-scripts folder with SQL file
+    networks:
+      - app_network
+
+  # Backend service (Node.js)
+  backend:
+    build:
+      context: ./backend  # Directory for the Backend Dockerfile
+    container_name: login_back
+    environment:
+      # - Google_Auth=${Google_Auth}  
+      # - JWT_SECRET=${JWT_SECRET}
+      - Google_Auth=771100970427-nedtad8bj9v8oreqspooausup2nl2ser.apps.googleusercontent.com
+      - JWT_SECRET=FEENFEENFEEN
+    ports:
+      - "5000:5000"  # Exposing port 5000 for API
+    depends_on:
+      - db  # Ensure the DB is up before the backend starts
+    networks:
+      - app_network
+    command: npm start  # Start backend server
+
+  # Frontend service (React)
+  frontend:
+    build:
+      context: ./frontend  # Directory for the Frontend Dockerfile
+    container_name: login_front
+    ports:
+      - "3000:3000"  # Exposing port 3000 for React frontend
+    depends_on:
+      - backend  # Ensure the backend is up before frontend starts
+    networks:
+      - app_network
+    command: npm start  # Start frontend server
+
+networks:
+  app_network:
+    driver: bridge  # Use the default bridge network for communication between containers
+
+volumes:
+  db_data:
+    driver: local  # Local volume for MariaDB data persistence
