@@ -13,7 +13,11 @@ function UserDashboard() {
     } else {
       try {
         // Verify token (decode and check expiration if needed)
-        jwtDecode(token);
+        const decoded = jwtDecode(token);
+        if(decoded.role !== 'user'){
+          localStorage.removeItem('token')
+          navigate('/login');
+        }
       } catch (error) {
         // If token is invalid, redirect to login
         navigate('/login');

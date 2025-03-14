@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';  // useNavigate is the correct h
 import { jwtDecode } from 'jwt-decode';
 
 function Dashboard() {
-  const [role, setRole] = useState('');
+  // const [role, setRole] = useState('');
   const navigate = useNavigate(); // Create a navigate object for navigation
 
   useEffect(() => {
@@ -12,7 +12,7 @@ function Dashboard() {
       try {
         // Decode the JWT token to extract the role
         const decoded = jwtDecode(token);
-        setRole(decoded.role);
+        // setRole(decoded.role);
 
         // Redirect based on the role using navigate
         if (decoded.role === 'admin') {
