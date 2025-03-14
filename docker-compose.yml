@@ -15,6 +15,12 @@ services:
       - ./database/init-scripts:/docker-entrypoint-initdb.d  # Mount init-scripts folder with SQL file
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
 
   # Backend service (Node.js)
   backend:
@@ -22,14 +28,13 @@ services:
       context: ./backend  # Directory for the Backend Dockerfile
     container_name: login_back
     environment:
-      # - Google_Auth=${Google_Auth}  
-      # - JWT_SECRET=${JWT_SECRET}
       - Google_Auth=${Google_Auth}
       - JWT_SECRET=${JWT_SECRET}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
-      - db  # Ensure the DB is up before the backend starts
+       db:
+        condition: service_healthy #make sure db is ready 
     networks:
       - app_network
     command: npm start  # Start backend server
