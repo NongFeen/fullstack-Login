@@ -4,7 +4,6 @@ import axios from 'axios';
 function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
-
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
@@ -20,8 +19,10 @@ function Login() {
   useEffect(() => {
     if (isGoogleScriptLoaded) {
       // Initialize Google Sign-In only after the script is loaded
+ 
+      
       window.google.accounts.id.initialize({
-        client_id: process.env.Google_Auth, 
+        client_id: process.env.REACT_APP_GOOGLE_AUTH, 
         callback: handleGoogleLogin,
       });
       

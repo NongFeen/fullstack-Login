@@ -24,8 +24,8 @@ services:
     environment:
       # - Google_Auth=${Google_Auth}  
       # - JWT_SECRET=${JWT_SECRET}
-      - Google_Auth=FF
-      - JWT_SECRET=FEENFEENFEEN
+      - Google_Auth=${Google_Auth}
+      - JWT_SECRET=${JWT_SECRET}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
@@ -39,6 +39,9 @@ services:
     build:
       context: ./frontend  # Directory for the Frontend Dockerfile
     container_name: login_front
+    environment:
+    #why it need REACT_APP_ :(
+      - REACT_APP_GOOGLE_AUTH=${Google_Auth}
     ports:
       - "3000:3000"  # Exposing port 3000 for React frontend
     depends_on:
