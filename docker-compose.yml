@@ -28,6 +28,9 @@ services:
     environment:
       - Google_Auth=${Google_Auth}
       - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_database=${DB_database}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
