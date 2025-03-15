@@ -1,5 +1,5 @@
 # Use official MySQL image
 FROM mariadb:10.6
 
-COPY test_data,sql /docker-entrypoint-initdb.d/
+COPY init-scripts/test_data.sql /docker-entrypoint-initdb.d/
 #doesn't make any sense dont ask me
