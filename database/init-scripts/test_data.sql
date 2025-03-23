@@ -16,3 +16,5 @@ INSERT INTO users (id, username, password, role) VALUES
 
 GRANT ALL PRIVILEGES ON auth_db.* TO 'root'@'%';
 FLUSH PRIVILEGES;
+
+Select * from users;
