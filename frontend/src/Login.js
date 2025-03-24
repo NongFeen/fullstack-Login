@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Login.css'; // We'll create a matching CSS file
+import './SciFiAuth.css'; // We'll use the same CSS file for both pages
 
 function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
@@ -69,51 +69,60 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
-          <h2>Welcome Back</h2>
-          <p className="subtitle">Log in to your account</p>
+    <div className="scifi-container">
+      <div className="stars"></div>
+      <div className="twinkling"></div>
+      
+      <div className="scifi-card">
+        <div className="scifi-header">
+          <h2>Station Access</h2>
+          <div className="scifi-divider"></div>
+          <p className="subtitle">Authentication Protocol</p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">User Identifier</label>
           <input 
             id="username"
             type="text" 
-            placeholder="Enter your username" 
+            placeholder="Enter identifier code" 
             value={user.username}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
+            className="scifi-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Access Key</label>
           <input 
             id="password"
             type="password" 
-            placeholder="Enter your password" 
+            placeholder="Enter security key" 
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
+            className="scifi-input"
           />
         </div>
         
         <button 
-          className={`login-button ${loading ? 'loading' : ''}`}
+          className={`scifi-button ${loading ? 'loading' : ''}`}
           onClick={handleLogin}
           disabled={loading}
         >
-          {loading ? 'Logging in...' : 'Log In'}
+          {loading ? 
+            <span className="loading-text">Authenticating<span className="dots">...</span></span> : 
+            'Access Terminal'
+          }
         </button>
         
-        <div className="divider">
+        <div className="scifi-divider alt">
           <span>OR</span>
         </div>
         
         <div id="google-button" className="google-button-container"></div>
         
-        <div className="register-link">
-          Don't have an account? <a href="/register">Register now</a>
+        <div className="auth-link">
+          No access? <a href="/register">Initialize New User</a>
         </div>
       </div>
     </div>

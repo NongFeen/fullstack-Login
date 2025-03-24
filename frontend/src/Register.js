@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Register.css'; // You'll need to create this CSS file
+import './SciFiAuth.css'; // We'll create a shared CSS file for both pages
 
 function Register() {
   const [user, setUser] = useState({ username: '', password: '', role: 'user' });
@@ -27,61 +27,72 @@ function Register() {
   };
   
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <div className="register-header">
-          <h2>Create an Account</h2>
-          <p className="subtitle">Join our platform to get started</p>
+    <div className="scifi-container">
+      <div className="stars"></div>
+      <div className="twinkling"></div>
+      
+      <div className="scifi-card">
+        <div className="scifi-header">
+          <h2>Create Station Access</h2>
+          <div className="scifi-divider"></div>
+          <p className="subtitle">Initialize New User Protocol</p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">User Identifier</label>
           <input 
             id="username"
             type="text" 
-            placeholder="Enter your username" 
+            placeholder="Enter identifier code" 
             value={user.username}
             onChange={e => setUser({...user, username: e.target.value})} 
+            className="scifi-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Access Key</label>
           <input 
             id="password"
             type="password" 
-            placeholder="Create a strong password" 
+            placeholder="Create security key" 
             value={user.password}
             onChange={e => setUser({...user, password: e.target.value})} 
+            className="scifi-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="role">Account Type</label>
+          <label htmlFor="role">Clearance Level</label>
           <select 
             id="role"
             value={user.role}
             onChange={e => setUser({...user, role: e.target.value})}
+            className="scifi-select"
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
+            <option value="user">Standard User</option>
+            <option value="admin">Admin Access</option>
+            <option value="manager">Operations Manager</option>
           </select>
         </div>
         
         <button 
-          className={`register-button ${loading ? 'loading' : ''}`}
+          className={`scifi-button ${loading ? 'loading' : ''}`}
           onClick={handleRegister}
           disabled={loading}
         >
-          {loading ? 'Creating Account...' : 'Register Now'}
+          {loading ? 
+            <span className="loading-text">Initializing<span className="dots">...</span></span> : 
+            'Register User'
+          }
         </button>
         
-        <div className="login-link">
-          Already have an account? <a href="/login">Log in</a>
+        <div className="auth-link">
+          Already registered? <a href="/login">Access Terminal</a>
         </div>
       </div>
     </div>
   );
 }
+
 export default Register;

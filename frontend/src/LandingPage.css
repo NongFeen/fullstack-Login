@@ -1,0 +1,209 @@
+/* LandingPage.css */
+body {
+  margin: 0;
+  font-family: 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #030518;
+  overflow: hidden;
+  color: #fff;
+}
+
+.landing-container {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.star-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  background-color: #fff;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.meteor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+  animation: meteor 6s linear infinite;
+  z-index: 2;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 10px #fff;
+}
+
+@keyframes meteor {
+  0% {
+    top: -10%;
+    left: -10%;
+    opacity: 1;
+  }
+  100% {
+    top: 110%;
+    left: 110%;
+    opacity: 0;
+  }
+}
+
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 10;
+  padding: 2rem;
+  background: rgba(0, 8, 36, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(82, 190, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(82, 190, 255, 0.2);
+}
+
+.title {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.glow {
+  color: #52beff;
+  text-shadow: 0 0 5px #52beff, 0 0 10px #52beff, 0 0 20px #52beff;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { text-shadow: 0 0 5px #52beff, 0 0 10px #52beff; }
+  50% { text-shadow: 0 0 20px #52beff, 0 0 30px #52beff, 0 0 40px #52beff; }
+  100% { text-shadow: 0 0 5px #52beff, 0 0 10px #52beff; }
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  color: #b3e0ff;
+  letter-spacing: 2px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 2rem;
+}
+
+.neon-button {
+  background: transparent;
+  color: #52beff;
+  border: 2px solid #52beff;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px rgba(82, 190, 255, 0.5);
+  transition: all 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.neon-button:hover {
+  background-color: rgba(82, 190, 255, 0.2);
+  box-shadow: 0 0 20px rgba(82, 190, 255, 0.8);
+  transform: translateY(-3px);
+}
+
+.neon-button:active {
+  transform: translateY(1px);
+}
+
+.planet {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #7842f5, #1c0652);
+  box-shadow: 0 0 50px rgba(120, 66, 245, 0.5);
+  top: -50px;
+  right: -50px;
+  z-index: -1;
+}
+
+.planet::after {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+  top: 60%;
+  left: -15px;
+}
+
+.spaceship {
+  position: absolute;
+  width: 60px;
+  height: 20px;
+  background: linear-gradient(to right, #333, #666);
+  border-radius: 50% 50% 0 0;
+  bottom: 40px;
+  left: -80px;
+  transform: rotate(30deg);
+  z-index: -1;
+  animation: fly 15s linear infinite;
+}
+
+.spaceship::before {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 8px;
+  background: linear-gradient(to right, #ff0, #f70);
+  border-radius: 0 0 50% 50%;
+  bottom: -8px;
+  left: 15px;
+  box-shadow: 0 0 10px #ff0, 0 0 20px #f70;
+}
+
+@keyframes fly {
+  0% { 
+    transform: rotate(30deg) translateX(0); 
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% { 
+    transform: rotate(30deg) translateX(calc(100vw + 200px));
+    opacity: 0;
+  }
+}
+
+/* Add this to your index.css or import a font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');

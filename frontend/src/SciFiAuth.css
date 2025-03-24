@@ -1,0 +1,178 @@
+/* SciFiAuth.css */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Space Background */
+.scifi-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.stars, .twinkling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stars {
+  background: #000 url('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'); /* This is a placeholder URL, we'll use CSS to create stars */
+  background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)), 
+                    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 160px 120px, #ddd, rgba(0,0,0,0)), 
+                    radial-gradient(1.5px 1.5px at 200px 170px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 250px 220px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1.5px 1.5px at 300px 270px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 350px 320px, #ddd, rgba(0,0,0,0)), 
+                    radial-gradient(1.5px 1.5px at 400px 370px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 450px 420px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1.5px 1.5px at 500px 470px, #fff, rgba(0,0,0,0)), 
+                    radial-gradient(1px 1px at 550px 520px, #ddd, rgba(0,0,0,0)), 
+                    radial-gradient(1.5px 1.5px at 600px 570px, #fff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  z-index: 0;
+}
+
+.twinkling {
+  background: linear-gradient(45deg, rgba(0,0,60,0.5) 0%, rgba(0,0,0,0) 70%);
+  z-index: 1;
+}
+
+/* Card Style */
+.scifi-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: rgba(16, 23, 41, 0.8);
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 195, 255, 0.15), 
+              0 0 15px rgba(0, 195, 255, 0.1),
+              inset 0 0 10px rgba(0, 195, 255, 0.05);
+  backdrop-filter: blur(5px);
+  padding: 40px;
+  border: 1px solid rgba(0, 195, 255, 0.2);
+  position: relative;
+  z-index: 2;
+  margin: 20px;
+}
+
+.scifi-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+                            rgba(0, 195, 255, 0) 0%, 
+                            rgba(0, 195, 255, 0.3) 50%, 
+                            rgba(0, 195, 255, 0) 100%);
+  z-index: -1;
+  border-radius: 8px;
+  animation: borderGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
+}
+
+/* Header Style */
+.scifi-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.scifi-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  color: #00c3ff;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: #a0a7b5;
+  font-size: 14px;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* Divider */
+.scifi-divider {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(to right, 
+                            rgba(0, 195, 255, 0), 
+                            rgba(0, 195, 255, 0.8), 
+                            rgba(0, 195, 255, 0));
+  margin: 15px auto;
+  width: 80%;
+}
+
+.scifi-divider.alt {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(to right, 
+                            rgba(0, 195, 255, 0), 
+                            rgba(0, 195, 255, 0.5), 
+                            rgba(0, 195, 255, 0));
+  margin: 25px auto;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scifi-divider.alt span {
+  background: #101729;
+  padding: 0 10px;
+  color: #5e6a82;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #9ba7c9;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.scifi-input, .scifi-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 195, 255, 0.3);
+  border-radius: 4px;
+  font-size: 15px;
+  background-color: rgba(12, 17, 31, 0.6);
+  color: #e0e6ff
+}
