@@ -1,10 +1,9 @@
-/* LandingPage.css */
 body {
   margin: 0;
-  font-family: 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #030518;
+  background-color: #0a0a0a;
   overflow: hidden;
   color: #fff;
 }
@@ -19,52 +18,96 @@ body {
   overflow: hidden;
 }
 
-.star-container {
+.music-note {
   position: absolute;
-  height: 100%;
-  width: 100%;
+  font-size: 24px;
+  opacity: 0;
+  animation: float linear infinite;
   z-index: 1;
 }
 
-.star {
-  position: absolute;
-  background-color: #fff;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  animation: twinkle linear infinite;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-.meteor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 4px;
-  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
-  animation: meteor 6s linear infinite;
-  z-index: 2;
-  transform: rotate(-45deg);
-  box-shadow: 0 0 10px #fff;
-}
-
-@keyframes meteor {
-  0% {
-    top: -10%;
-    left: -10%;
-    opacity: 1;
-  }
-  100% {
-    top: 110%;
-    left: 110%;
+@keyframes float {
+  0% { 
+    transform: translateY(0) rotate(0deg);
     opacity: 0;
   }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% { 
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.equalizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 2;
+}
+
+.equalizer-bar {
+  width: 10px;
+  background: linear-gradient(to top, #ff0055, #ff7700);
+  border-radius: 4px 4px 0 0;
+  animation: equalize ease-in-out infinite;
+}
+
+@keyframes equalize {
+  0%, 100% { height: 20px; }
+  50% { height: 80px; }
+}
+
+.vinyl-record {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #222, #0a0a0a);
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+  top: 40px;
+  right: 40px;
+  z-index: -1;
+  animation: spin 10s linear infinite;
+}
+
+.vinyl-record::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle at 50% 50%, #444, #222);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vinyl-record::before {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .landing-content {
@@ -75,11 +118,11 @@ body {
   text-align: center;
   z-index: 10;
   padding: 2rem;
-  background: rgba(0, 8, 36, 0.7);
+  background: rgba(10, 10, 10, 0.7);
   border-radius: 20px;
-  box-shadow: 0 0 40px rgba(82, 190, 255, 0.4);
+  box-shadow: 0 0 40px rgba(255, 0, 85, 0.4);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(82, 190, 255, 0.2);
+  border: 1px solid rgba(255, 0, 85, 0.2);
 }
 
 .title {
@@ -90,21 +133,21 @@ body {
 }
 
 .glow {
-  color: #52beff;
-  text-shadow: 0 0 5px #52beff, 0 0 10px #52beff, 0 0 20px #52beff;
+  color: #ff0055;
+  text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055, 0 0 20px #ff0055;
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { text-shadow: 0 0 5px #52beff, 0 0 10px #52beff; }
-  50% { text-shadow: 0 0 20px #52beff, 0 0 30px #52beff, 0 0 40px #52beff; }
-  100% { text-shadow: 0 0 5px #52beff, 0 0 10px #52beff; }
+  0% { text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055; }
+  50% { text-shadow: 0 0 20px #ff0055, 0 0 30px #ff0055, 0 0 40px #ff0055; }
+  100% { text-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055; }
 }
 
 .subtitle {
   font-size: 1.5rem;
   margin-bottom: 3rem;
-  color: #b3e0ff;
+  color: #ff7700;
   letter-spacing: 2px;
 }
 
@@ -115,8 +158,8 @@ body {
 
 .neon-button {
   background: transparent;
-  color: #52beff;
-  border: 2px solid #52beff;
+  color: #ff0055;
+  border: 2px solid #ff0055;
   border-radius: 8px;
   padding: 1rem 2rem;
   font-size: 1rem;
@@ -124,14 +167,14 @@ body {
   cursor: pointer;
   letter-spacing: 2px;
   text-transform: uppercase;
-  box-shadow: 0 0 10px rgba(82, 190, 255, 0.5);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
   transition: all 0.3s ease;
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .neon-button:hover {
-  background-color: rgba(82, 190, 255, 0.2);
-  box-shadow: 0 0 20px rgba(82, 190, 255, 0.8);
+  background-color: rgba(255, 0, 85, 0.2);
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.8);
   transform: translateY(-3px);
 }
 
@@ -139,71 +182,20 @@ body {
   transform: translateY(1px);
 }
 
-.planet {
+.headphones {
   position: absolute;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #7842f5, #1c0652);
-  box-shadow: 0 0 50px rgba(120, 66, 245, 0.5);
-  top: -50px;
-  right: -50px;
-  z-index: -1;
-}
-
-.planet::after {
-  content: '';
-  position: absolute;
-  width: 180px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transform: rotate(-30deg);
-  top: 60%;
-  left: -15px;
-}
-
-.spaceship {
-  position: absolute;
-  width: 60px;
-  height: 20px;
-  background: linear-gradient(to right, #333, #666);
-  border-radius: 50% 50% 0 0;
+  width: 80px;
+  height: 80px;
   bottom: 40px;
-  left: -80px;
-  transform: rotate(30deg);
+  left: 40px;
   z-index: -1;
-  animation: fly 15s linear infinite;
+  animation: bounce 3s ease-in-out infinite;
 }
 
-.spaceship::before {
-  content: '';
-  position: absolute;
-  width: 30px;
-  height: 8px;
-  background: linear-gradient(to right, #ff0, #f70);
-  border-radius: 0 0 50% 50%;
-  bottom: -8px;
-  left: 15px;
-  box-shadow: 0 0 10px #ff0, 0 0 20px #f70;
-}
-
-@keyframes fly {
-  0% { 
-    transform: rotate(30deg) translateX(0); 
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% { 
-    transform: rotate(30deg) translateX(calc(100vw + 200px));
-    opacity: 0;
-  }
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
 
 /* Add this to your index.css or import a font */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');

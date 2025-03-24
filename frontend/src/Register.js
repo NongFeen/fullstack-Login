@@ -1,10 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './SciFiAuth.css'; // We'll create a shared CSS file for both pages
+import './MusicTheme.css';
 
 function Register() {
   const [user, setUser] = useState({ username: '', password: '', role: 'user' });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Create floating music notes
+    const createMusicNotes = () => {
+      const container = document.querySelector('.music-notes');
+      if (!container) return;
+      
+      const noteCount = 20;
+      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < noteCount; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+        note.style.left = `${Math.random() * 100}%`;
+        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        note.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(note);
+      }
+    };
+    
+    createMusicNotes();
+    
+    // Cleanup
+    return () => {
+      const container = document.querySelector('.music-notes');
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
+  }, []);
 
   const handleRegister = async () => {
     if (!user.username || !user.password) {
@@ -27,68 +60,69 @@ function Register() {
   };
   
   return (
-    <div className="scifi-container">
-      <div className="stars"></div>
-      <div className="twinkling"></div>
+    <div className="music-auth-container">
+      <div className="music-notes"></div>
+      <div className="vinyl-decoration vinyl-top-left"></div>
+      <div className="vinyl-decoration vinyl-bottom-right"></div>
       
-      <div className="scifi-card">
-        <div className="scifi-header">
-          <h2>Create Station Access</h2>
-          <div className="scifi-divider"></div>
-          <p className="subtitle">Initialize New User Protocol</p>
+      <div className="music-auth-card">
+        <div className="music-auth-header">
+          <h2>Join the Beat</h2>
+          <div className="music-divider"></div>
+          <p className="subtitle">Create your FeenFeenFeen account</p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">User Identifier</label>
+          <label htmlFor="username">Username</label>
           <input 
             id="username"
             type="text" 
-            placeholder="Enter identifier code" 
+            placeholder="Enter your username" 
             value={user.username}
             onChange={e => setUser({...user, username: e.target.value})} 
-            className="scifi-input"
+            className="music-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Access Key</label>
+          <label htmlFor="password">Password</label>
           <input 
             id="password"
             type="password" 
-            placeholder="Create security key" 
+            placeholder="Create a secure password" 
             value={user.password}
             onChange={e => setUser({...user, password: e.target.value})} 
-            className="scifi-input"
+            className="music-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="role">Clearance Level</label>
+          <label htmlFor="role">Account Type</label>
           <select 
             id="role"
             value={user.role}
             onChange={e => setUser({...user, role: e.target.value})}
-            className="scifi-select"
+            className="music-select"
           >
-            <option value="user">Standard User</option>
-            <option value="admin">Admin Access</option>
-            <option value="manager">Operations Manager</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
           </select>
         </div>
         
         <button 
-          className={`scifi-button ${loading ? 'loading' : ''}`}
+          className={`music-button ${loading ? 'loading' : ''}`}
           onClick={handleRegister}
           disabled={loading}
         >
           {loading ? 
-            <span className="loading-text">Initializing<span className="dots">...</span></span> : 
-            'Register User'
+            <span className="loading-text">Creating Account<span className="dots">...</span></span> : 
+            'Join Now'
           }
         </button>
         
         <div className="auth-link">
-          Already registered? <a href="/login">Access Terminal</a>
+          Already have an account? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './SciFiAuth.css'; // We'll use the same CSS file for both pages
+import './MusicTheme.css';
 
 function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
@@ -8,6 +8,30 @@ function Login() {
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
   
   useEffect(() => {
+    // Create floating music notes animation
+    const createMusicNotes = () => {
+      const container = document.querySelector('.music-notes');
+      if (!container) return;
+      
+      const noteCount = 20;
+      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < noteCount; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+        note.style.left = `${Math.random() * 100}%`;
+        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        note.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(note);
+      }
+    };
+    
+    createMusicNotes();
+    
+    // Load Google sign-in script
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
@@ -15,7 +39,15 @@ function Login() {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script); // Cleanup script on unmount
+      // Clean up
+      const container = document.querySelector('.music-notes');
+      if (container) {
+        container.innerHTML = '';
+      }
+      
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -29,7 +61,7 @@ function Login() {
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-button'),
-        { theme: 'outline', size: 'large', width: '100%' }
+        { theme: 'filled_black', size: 'large', width: '100%', text: 'signin_with', shape: 'pill' }
       );
     }
   }, [isGoogleScriptLoaded]);
@@ -69,60 +101,61 @@ function Login() {
   };
 
   return (
-    <div className="scifi-container">
-      <div className="stars"></div>
-      <div className="twinkling"></div>
+    <div className="music-auth-container">
+      <div className="music-notes"></div>
+      <div className="vinyl-decoration vinyl-top-left"></div>
+      <div className="vinyl-decoration vinyl-bottom-right"></div>
       
-      <div className="scifi-card">
-        <div className="scifi-header">
-          <h2>Station Access</h2>
-          <div className="scifi-divider"></div>
-          <p className="subtitle">Authentication Protocol</p>
+      <div className="music-auth-card">
+        <div className="music-auth-header">
+          <h2>Welcome Back</h2>
+          <div className="music-divider"></div>
+          <p className="subtitle">Sign in to your FeenFeenFeen account</p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">User Identifier</label>
+          <label htmlFor="username">Username</label>
           <input 
             id="username"
             type="text" 
-            placeholder="Enter identifier code" 
+            placeholder="Enter your username" 
             value={user.username}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
-            className="scifi-input"
+            className="music-input"
           />
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Access Key</label>
+          <label htmlFor="password">Password</label>
           <input 
             id="password"
             type="password" 
-            placeholder="Enter security key" 
+            placeholder="Enter your password" 
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
-            className="scifi-input"
+            className="music-input"
           />
         </div>
         
         <button 
-          className={`scifi-button ${loading ? 'loading' : ''}`}
+          className={`music-button ${loading ? 'loading' : ''}`}
           onClick={handleLogin}
           disabled={loading}
         >
           {loading ? 
-            <span className="loading-text">Authenticating<span className="dots">...</span></span> : 
-            'Access Terminal'
+            <span className="loading-text">Signing In<span className="dots">...</span></span> : 
+            'Sign In'
           }
         </button>
         
-        <div className="scifi-divider alt">
+        <div className="auth-divider">
           <span>OR</span>
         </div>
         
         <div id="google-button" className="google-button-container"></div>
         
         <div className="auth-link">
-          No access? <a href="/register">Initialize New User</a>
+          Don't have an account? <a href="/register">Join Now</a>
         </div>
       </div>
     </div>

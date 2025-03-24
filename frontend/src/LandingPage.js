@@ -14,51 +14,87 @@ function LandingPage() {
   };
 
   useEffect(() => {
-    // Create stars animation effect
-    const createStars = () => {
-      const container = document.querySelector('.star-container');
+    // Create floating music notes animation effect
+    const createMusicNotes = () => {
+      const container = document.querySelector('.landing-container');
       if (!container) return;
       
-      container.innerHTML = '';
-      const starCount = 100;
+      // Clear any existing notes
+      const existingNotes = document.querySelectorAll('.music-note');
+      existingNotes.forEach(note => note.remove());
       
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.animationDuration = `${Math.random() * 10 + 5}s`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
-        container.appendChild(star);
+      const noteCount = 30;
+      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+      
+      for (let i = 0; i < noteCount; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+        note.style.left = `${Math.random() * 100}%`;
+        note.style.bottom = `-50px`;
+        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        note.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(note);
       }
     };
     
-    createStars();
+    // Create equalizer bars
+    const createEqualizer = () => {
+      const equalizer = document.querySelector('.equalizer');
+      if (!equalizer) return;
+      
+      equalizer.innerHTML = '';
+      const barCount = 20;
+      
+      for (let i = 0; i < barCount; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'equalizer-bar';
+        bar.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
+        bar.style.animationDelay = `${Math.random() * 0.5}s`;
+        equalizer.appendChild(bar);
+      }
+    };
+    
+    createMusicNotes();
+    createEqualizer();
+    
+    // Cleanup function
+    return () => {
+      const container = document.querySelector('.landing-container');
+      if (container) {
+        const notes = document.querySelectorAll('.music-note');
+        notes.forEach(note => note.remove());
+      }
+    };
   }, []);
 
   return (
     <div className="landing-container">
-      <div className="star-container"></div>
-      <div className="meteor"></div>
+      {/* Music notes will be added by JS */}
+      <div className="equalizer"></div>
+      <div className="vinyl-record"></div>
+      
       <div className="landing-content">
-        <div className="spaceship"></div>
-        <div className="planet"></div>
-        
         <h1 className="title">
-          <span className="glow">STELLAR</span> GATEWAY
+          <span className="glow">FEENFEENFEEN</span> 
         </h1>
         
-        <p className="subtitle">Navigate the digital universe</p>
+        <p className="subtitle">Your gateway to musical excellence</p>
         
         <div className="auth-buttons">
           <button className="neon-button" onClick={handleLoginClick}>
-            INITIATE ACCESS
+            SIGN IN
           </button>
           <button className="neon-button" onClick={handleRegisterClick}>
-            CREATE IDENTITY
+            JOIN NOW
           </button>
         </div>
       </div>
+      
+      <svg className="headphones" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10C29.5 10 13 26.5 13 47v20h12V47c0-13.8 11.2-25 25-25s25 11.2 25 25v20h12V47C87 26.5 70.5 10 50 10z" stroke="#ff0055" strokeWidth="4"/>
+        <path d="M13 67c-5 0-9 4-9 9v8c0 5 4 9 9 9h8V67h-8zM87 67c5 0 9 4 9 9v8c0 5-4 9-9 9h-8V67h8z" fill="#ff0055"/>
+      </svg>
     </div>
   );
 }
