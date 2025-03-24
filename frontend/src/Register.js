@@ -1,10 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Register.css'; // You'll need to create this CSS file
+import './MusicTheme.css';
 
 function Register() {
   const [user, setUser] = useState({ username: '', password: '', role: 'user' });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Create floating music notes
+    const createMusicNotes = () => {
+      const container = document.querySelector('.music-notes');
+      if (!container) return;
+      
+      const noteCount = 20;
+      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < noteCount; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+        note.style.left = `${Math.random() * 100}%`;
+        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        note.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(note);
+      }
+    };
+    
+    createMusicNotes();
+    
+    // Cleanup
+    return () => {
+      const container = document.querySelector('.music-notes');
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
+  }, []);
 
   const handleRegister = async () => {
     if (!user.username || !user.password) {
@@ -27,11 +60,16 @@ function Register() {
   };
   
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <div className="register-header">
-          <h2>Create an Account</h2>
-          <p className="subtitle">Join our platform to get started</p>
+    <div className="music-auth-container">
+      <div className="music-notes"></div>
+      <div className="vinyl-decoration vinyl-top-left"></div>
+      <div className="vinyl-decoration vinyl-bottom-right"></div>
+      
+      <div className="music-auth-card">
+        <div className="music-auth-header">
+          <h2>Join the Beat</h2>
+          <div className="music-divider"></div>
+          <p className="subtitle">Create your FeenFeenFeen account</p>
         </div>
         
         <div className="form-group">
@@ -42,6 +80,7 @@ function Register() {
             placeholder="Enter your username" 
             value={user.username}
             onChange={e => setUser({...user, username: e.target.value})} 
+            className="music-input"
           />
         </div>
         
@@ -50,9 +89,10 @@ function Register() {
           <input 
             id="password"
             type="password" 
-            placeholder="Create a strong password" 
+            placeholder="Create a secure password" 
             value={user.password}
             onChange={e => setUser({...user, password: e.target.value})} 
+            className="music-input"
           />
         </div>
         
@@ -62,6 +102,7 @@ function Register() {
             id="role"
             value={user.role}
             onChange={e => setUser({...user, role: e.target.value})}
+            className="music-select"
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
@@ -70,18 +111,22 @@ function Register() {
         </div>
         
         <button 
-          className={`register-button ${loading ? 'loading' : ''}`}
+          className={`music-button ${loading ? 'loading' : ''}`}
           onClick={handleRegister}
           disabled={loading}
         >
-          {loading ? 'Creating Account...' : 'Register Now'}
+          {loading ? 
+            <span className="loading-text">Creating Account<span className="dots">...</span></span> : 
+            'Join Now'
+          }
         </button>
         
-        <div className="login-link">
-          Already have an account? <a href="/login">Log in</a>
+        <div className="auth-link">
+          Already have an account? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>
   );
 }
+
 export default Register;

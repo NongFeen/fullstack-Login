@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Login.css'; // We'll create a matching CSS file
+import './MusicTheme.css';
 
 function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
@@ -8,6 +8,30 @@ function Login() {
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
   
   useEffect(() => {
+    // Create floating music notes animation
+    const createMusicNotes = () => {
+      const container = document.querySelector('.music-notes');
+      if (!container) return;
+      
+      const noteCount = 20;
+      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < noteCount; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
+        note.style.left = `${Math.random() * 100}%`;
+        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        note.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(note);
+      }
+    };
+    
+    createMusicNotes();
+    
+    // Load Google sign-in script
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
@@ -15,7 +39,15 @@ function Login() {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script); // Cleanup script on unmount
+      // Clean up
+      const container = document.querySelector('.music-notes');
+      if (container) {
+        container.innerHTML = '';
+      }
+      
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -29,7 +61,7 @@ function Login() {
       
       window.google.accounts.id.renderButton(
         document.getElementById('google-button'),
-        { theme: 'outline', size: 'large', width: '100%' }
+        { theme: 'filled_black', size: 'large', width: '100%', text: 'signin_with', shape: 'pill' }
       );
     }
   }, [isGoogleScriptLoaded]);
@@ -69,11 +101,16 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
+    <div className="music-auth-container">
+      <div className="music-notes"></div>
+      <div className="vinyl-decoration vinyl-top-left"></div>
+      <div className="vinyl-decoration vinyl-bottom-right"></div>
+      
+      <div className="music-auth-card">
+        <div className="music-auth-header">
           <h2>Welcome Back</h2>
-          <p className="subtitle">Log in to your account</p>
+          <div className="music-divider"></div>
+          <p className="subtitle">Sign in to your FeenFeenFeen account</p>
         </div>
         
         <div className="form-group">
@@ -84,6 +121,7 @@ function Login() {
             placeholder="Enter your username" 
             value={user.username}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
+            className="music-input"
           />
         </div>
         
@@ -95,25 +133,29 @@ function Login() {
             placeholder="Enter your password" 
             value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
+            className="music-input"
           />
         </div>
         
         <button 
-          className={`login-button ${loading ? 'loading' : ''}`}
+          className={`music-button ${loading ? 'loading' : ''}`}
           onClick={handleLogin}
           disabled={loading}
         >
-          {loading ? 'Logging in...' : 'Log In'}
+          {loading ? 
+            <span className="loading-text">Signing In<span className="dots">...</span></span> : 
+            'Sign In'
+          }
         </button>
         
-        <div className="divider">
+        <div className="auth-divider">
           <span>OR</span>
         </div>
         
         <div id="google-button" className="google-button-container"></div>
         
-        <div className="register-link">
-          Don't have an account? <a href="/register">Register now</a>
+        <div className="auth-link">
+          Don't have an account? <a href="/register">Join Now</a>
         </div>
       </div>
     </div>
