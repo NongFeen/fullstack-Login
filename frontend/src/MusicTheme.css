@@ -30,7 +30,7 @@ body {
 
 .music-note {
   position: absolute;
-  font-size: 24px;
+  font-size: 20px;
   color: rgba(255, 0, 85, 0.3);
   animation: floatNote linear infinite;
 }
