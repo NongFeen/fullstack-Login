@@ -1,0 +1,437 @@
+sudo snap install docker
+say yo
+sudo snap install docker
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen~
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen:latest
+sudo docker login registry.nipa.cloud
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen:latest
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen-front
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+mkdir nginx,conf
+mkdir nginx.conf
+rm nginx,conf
+mkdir nginx
+cd nginx
+nano nginx.conf
+nano nginx.conf
+cd ..
+docker ps
+docker
+sudo docker ps
+docker run -d -p 3306:3306 -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MYSQL_DATABASE='auth_db' --name Maria_DB registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+sudo docker run -d -p 3306:3306 -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MYSQL_DATABASE='auth_db' --name Maria_DB registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+sudo docker ps
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+nano .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+chmod 664 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+chmod 777 .env
+sudo chmod 664 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmod -R 664 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmod 777 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmod 666 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmo 755 .env
+sudo chmod 755 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 -e Google_Auth=771100970427-3a06j40hmej88p90qmekvf56kt3u0b0c.apps.googleusercontent.com -e JWT_SECRET=FEENFEENFEEN -e DB_HOST=host.docker.internal -e DB_USER=root -e DB_database=auth_db --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker ps
+sudo docker run -d -p 3000:3000 --name login_front registry.nipa.cloud/kmitl-registry/feenfeenfeen-front
+docker ps
+sudo docker ps
+sudo docker network create net-1
+docker network connect net-1 login_front
+sudo docker network connect net-1 login_front
+sudo docker network connect net-1 login_back
+$pwd
+pwd
+sudo docker run -d -p 8080:80 -v $pwd/nginx:/etc/nginx/conf.d --net net-1 nginx:latest
+sudo docker ps
+sudo docker exec -it Maria_db mysql -u root -p
+sudo docker exec -it maria_db mysql -u root -p
+sudo docker exec -it eaf095ed8e92
+sudo docker ps
+curl
+sudo docker exec -it eaf095ed8e92 systemctl nginx status
+wget localhost
+wget localhost:8080
+sudo docker exec -it eaf095ed8e92
+sudo docker ps
+wget localhost:3000
+wget localhost:5000
+sudo docker ps
+sudo docker stop eaf095ed8e92
+sudo docker ps
+apt install nginx
+sudo apt install nginx
+sudo systemctl nginx enable
+sudo systemctl enable nginx
+sudo docker ps
+sudo systemctl nginx status
+sudo systemctl status nginx
+sudo systemctl restart nginx
+sudo systemctl status nginx
+sudo systemctl status nginx
+sudo systemctl disable nginx
+sudo systemctl stop nginx
+sudo systemctl status nginx
+sudo docker image
+sudo docker run -d -p 8080:80 -v $pwd/nginx:/etc/nginx/conf.d --net net-1 nginx:latest
+sudo docker ps
+sudo docker rm -f 46c7c67f8b8d
+sudo docker ps
+cd nginx
+nano nginx.conf
+sudo docker run -d -p 80:80 -v $pwd/nginx:/etc/nginx/conf.d --net net-1 nginx:latest
+sudo docker ps
+sudo docker logs
+sudo docker logs 7045b88ee2f1
+sudo docker logs 7045b88ee2f1 -f
+cd ..
+sudo docker rm -f 7045b88ee2f1
+sudo docker ps
+pwd
+$ sudo docker run -d -p 80:80 -v ./nginx:/etc/nginx/conf.d --net net-1 --name nginx nginx:latest
+sudo docker run -d -p 80:80 -v ./nginx:/etc/nginx/conf.d --net net-1 --name nginx nginx:latest
+sudo docker logs nginx -f
+sudo docker rm -f nginx
+sudo docker run -d -p 80:80 -v /home/nc-user/nginx:/etc/nginx/conf.d --net net-1 --name nginx nginx:latest
+sudo docker logs nginx -f
+sudo docker exec -it nginx
+sudo docker exec -it nginx /bin/sh
+sudo docker rm -f nginx
+sudo docker run -d -p 80:80 -v /home/nc-user/nginx/nginx.conf:/etc/nginx/conf.d/default.conf --net net-1 --name nginx nginx:latest
+sudo docker logs nginx
+nano nginx/nginx.conf
+sudo docker ps
+sudo docker rm -f nginx
+nano nginx/nginx.conf
+sudo docker run -d -p 80:80 -v /home/nc-user/nginx/nginx.conf:/etc/nginx/conf.d/default.conf --net net-1 --name nginx nginx:latest
+sudo docker ps
+sudo docker exec -it 42ecfde4476a mysqli -u root -p
+sudo docker exec -it 42ecfde4476a mysql -u root -p
+sudo docker ps
+sudo docker logs login_back
+sudo docker login_back restart
+sudo docker restart login_back
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' Maria_DB
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login_front
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' login_back
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx
+sudo docker rm -f nginx
+nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+cd snap
+cd ..
+cd /etc
+cd nginx/
+nano conf.d
+nano conf.d
+cd conf.d/
+cd ..
+cd nginx/
+nano nginx.conf
+sudo nano nginx.conf
+cd ..
+sudo systemctl
+systemctl restart nginx
+sudo systemctl restart nginx
+sudo systemctl stop nginx
+sudo systemctl status nginx
+sudo systemctl start nginx
+cd etc/nginx
+sudo nginx.conf
+sudo nano nginx.conf
+sudo systemctl status nginx
+sudo systemctl start nginx
+sudo nano nginx.conf
+sudo systemctl start nginx
+sudo systemctl status nginx.service
+sudo nano example.com
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo nginx -t
+nao nginx.conf
+nano nginx.conf
+sudo nano nginx.conf
+sudo nginx -t
+sudo nano /etc/nginx/sites-available/example.com
+sudo rm -f /etc/nginx/sites-enabled/example.com
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo docker ps
+cd sites-enabled/
+nano example.com
+cd ..
+cd sites-enabled/
+sudo nano example.com
+sudo nginx -t
+sudo systemctl restart nginx
+docker network inspect login_front
+
+docker network inspect net-1
+sudo docker network inspect net-1
+proxy_pass http://172.18.0.2:3000/;
+cd ..
+sudo docker ps
+cd etc
+cd nginx
+sudo nginx.conf
+sudo nano nginx.conf
+cd sites-available/
+sudo nano example.com
+cd ..
+cd sites-enabled/
+sudo nano example.com
+sudo systemctl restart nginx
+cd ..
+nano nginx.conf
+สห
+cd ..
+sudo docker ps
+cd etc/
+cd nginx/
+cd sites-available/
+nano feenfeenfeen.online
+sudo nano feenfeenfeen.online
+sudo systemctl status nginx.service
+rm -r nginx,conf
+sudo docker ps
+nano index.html
+sudo systemctl restart nginx
+sudo systemctl status nginx
+nano index.html
+sudo systemctl stop nginx
+sudo systemctl status nginx
+cd etc/
+cd .etc
+cd etc/
+sudo cd et/
+cd ..
+cd nc-user/
+cd nginx
+cd ..
+cd etc
+cd ./etc
+sudo systemctl start nginx
+cd etc
+nginx -v
+cd /etc/nginx
+nano nginx.conf
+sudo nano nginx.conf
+cd sites-available/
+nano feenfeenfeen.online
+curl http://login_front.net-1:3000/
+sudo docker ps
+curl http://localhost:3000
+curl http://localhost:5000
+curl http://localhost:123
+nano feenfeenfeen.online
+docker network inspect net-1
+sudo docker network inspect net-1
+sudo nano feenfeenfeen.online
+cd ..
+cd sites-enabled/
+cd ..
+sudo ln -s /etc/nginx/sites-available/feenfeenfeen.online /etc/nginx/sites-enabled/
+cd sites-enabled/
+;s
+sudo systemctl restart nginx
+cd ..
+cd sites-available/
+nano default
+cd ..
+sudo docker ps
+sudo docker logs -f login_back
+cd ..
+cd home
+cd nc-user/
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+nano .env
+sudo docker rm login_back
+sudo docker stop login_back
+sudo docker ps
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+$pwd
+pwd
+sudo chmod 644 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmod 644 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+nano .env
+sudo chmod 666 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+cd ..
+cd nc-user/
+sudo chmod 755 .
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+cd ..
+cd ..
+cd ..
+cd home/
+cd nc-user/
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+dokcer run --help
+docker run --help
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+exit
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+c d..
+cd ..
+cd ..
+cd var
+cd run
+groups nc-user
+sudo usermod -aG docker nc-user
+cd ..
+cd home/
+cd nc-user/
+cd snap/
+cd docker/
+cd ..
+cat /etc/group | grep docker
+exit
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+file .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+~sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+file .env
+sudo docker ps
+sudo snap install docker
+sudo docker login registry.nipa.cloud
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo snap refresh
+sudo snap install docker
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker ps
+docker run -d -p
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo systemctl stop nginx
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo systemctl หะฟพะ nginx
+sudo systemctl start nginx
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run  registry.nipa.cloud/kmitl-registry/feenfeenfeen
+cat /etc/group | grep docker
+sudo groupadd docker
+sudo usermod -aG docker nc-user
+docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+exit
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+groups nc-user
+docker
+docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker ps
+sudo docker sp
+sudo docker ps
+sudo docker remove login_back
+sudo docker ps
+sudo docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker ps
+sudo docker remove login_back
+sudo docker rm -f login_back
+docker ps
+sudo docker ps
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file /home/nc-user/.env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo nano .env
+su rm -f .env
+su rm .env
+sudo rm .env
+sudo nano .env
+sudo docker run -d -p 5000:5000 --env-file /home/nc-user/.env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chown nc-user:nc-user .env
+sudo docker run -d -p 5000:5000 --env-file /home/nc-user/.env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo systemctl status docker
+snap list docker
+docker ps
+sudo docker ps
+nano .ssh
+cd .ssh
+cd a
+nano authorized_keys
+cd ..
+nano .bash_history
+sudo chmod .env 777
+sudo chmod 777 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+chmod 777 .env
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo chmod 755 /home/nc-user
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+snap connections docker
+sudo docker run -d -p 5000:5000 --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker ps
+sudo docker rm -f login_back
+exit
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+cd ..
+cd .
+cd //
+cd ..
+sudo usermod -aG docker nc-user
+groups nc-user
+exit
+docker
+sudo snap remove docker
+sudo apt-get update
+[200~sudo apt-get install -y docker.io
+~sudo apt-get install -y docker.io
+sudo apt-get install -y docker.io
+docker --version
+docker ps -a
+sudo dokcer ps
+sudo docker ps
+sudo systemctl status nginx
+history
+sudo docker image
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker login registry.nipa.cloud
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker login registry.nipa.cloud
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen-front
+sudo docker pull registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+sudo docker run -d -p 3306:3306 -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MYSQL_DATABASE='auth_db' --name Maria_DB registry.nipa.cloud/kmitl-registry/feenfeenfeen-db
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+docker run -d -p 3000:3000 --name login_front registry.nipa.cloud/kmitl-registry/feenfeenfeen-front
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+ps docker ps
+sudo docker ps
+sudo docker rm -f login_back
+sudo docker run -d -p 5000:5000 --env-file .env --name login_back registry.nipa.cloud/kmitl-registry/feenfeenfeen
+sudo docker logs login_back
+nano .env
+sudo docker network create net-1
+sudo docker network connect net-1 login_back
+sudo docker network connect net-1 login_front
+sudo docker restart login_back
+sudo docker logs login_back
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' Maria_DB
+sudo docker network inspect net-1
+sudo docker network connect net-1 Maria_DB
+sudo docker restart login_back
+sudo docker logs login_back
+sudo docker logs login_front
+sudo docker logs login_back
+sudo docker ps

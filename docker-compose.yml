@@ -11,8 +11,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./database/init-scripts:/docker-entrypoint-initdb.d  # Mount init-scripts folder with SQL file
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 1m30s
@@ -28,13 +28,16 @@ services:
     environment:
       - Google_Auth=${Google_Auth}
       - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_database=${DB_database}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
        db:
         condition: service_healthy #make sure db is ready 
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
     command: npm start  # Start backend server
 
   # Frontend service (React)
@@ -49,13 +52,14 @@ services:
       - "3000:3000"  # Exposing port 3000 for React frontend
     depends_on:
       - backend  # Ensure the backend is up before frontend starts
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
     command: npm start  # Start frontend server
 
-networks:
-  app_network:
-    driver: bridge  # Use the default bridge network for communication between containers
+#default as bridge mode anyway dont care
+# networks:
+#   app_network:
+#     driver: bridge  
 
 volumes:
   db_data:
