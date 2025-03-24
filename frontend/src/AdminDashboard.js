@@ -12,7 +12,7 @@ function AdminDashboard() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+   const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
     } else {
@@ -23,7 +23,7 @@ function AdminDashboard() {
           navigate('/login');
         } else {
           // Fetch mock data for demonstration
-          fetchMockData();
+          fetchMockData(); 
         }
       } catch (error) {
         navigate('/login');
