@@ -159,5 +159,5 @@ app.get('/dashboard', (req, res) => {
     });
 });
 
-app.listen(5000, () => console.log("Server running on port 5000 \nREACTGGAUTH : " + process.env.REACT_APP_Google_Auth ) + "\n AUTH : " + process.env.Google_Auth);
+app.listen(5000, () => console.log("Server running on port 5000 \n AUTH : ") + process.env.Google_Auth);
 
