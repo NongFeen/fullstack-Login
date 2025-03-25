@@ -108,7 +108,9 @@ app.get('/google-callback', async (req, res) => {
     }
 });
 
-//old googlelogin
+//old googlelogin code
+// didn't use anymore
+// leave it as memory
 app.post('/google-login', async (req, res) => {
     console.log("logging in with google");
     const { token } = req.body;
