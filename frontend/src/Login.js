@@ -75,7 +75,7 @@ function Login() {
     setLoading(true);
     try {
       console.log('Trying to login with user');
-      const { data } = await axios.post('http://backend:5000/login', user);
+      const { data } = await axios.post('/api/login', user);
       // Get JWT token 
       localStorage.setItem('token', data.token);
       window.location.href = '/dashboard';
@@ -89,7 +89,7 @@ function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-        const response = await axios.get('http://backend:5000/google-login');
+        const response = await axios.get('/api/google-login');
         const googleAuthUrl = response.data.authUrl;
 
         // Redirect user to Google Login page

@@ -9,10 +9,10 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id)
 );
 
-INSERT INTO users (id, username, password, role) VALUES
-(1, 'User1', '$2b$10$abcd1234567890', 'user'),
-(2, 'Admin', '$2b$10$efghijklmno.qwerty', 'admin'),
-(3, 'Manager', '$2b$10$lmnopqrstuvwxyzzzzzzz', 'manager');
+-- INSERT INTO users (id, username, password, role) VALUES
+-- (1, 'User1', '$2b$10$abcd1234567890', 'user'),
+-- (2, 'Admin', '$2b$10$efghijklmno.qwerty', 'admin'),
+-- (3, 'Manager', '$2b$10$lmnopqrstuvwxyzzzzzzz', 'manager');
 
 GRANT ALL PRIVILEGES ON auth_db.* TO 'root'@'%';
 FLUSH PRIVILEGES;
