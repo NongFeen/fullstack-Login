@@ -6,7 +6,7 @@ function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
-  
+
   useEffect(() => {
     // Create floating music notes animation
     const createMusicNotes = () => {
@@ -55,7 +55,7 @@ function Login() {
     if (isGoogleScriptLoaded) {
       // Initialize Google Sign-In only after the script is loaded
       window.google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_GOOGLE_AUTH, 
+        client_id: '771100970427-3a06j40hmej88p90qmekvf56kt3u0b0c.apps.googleusercontent.com', 
         callback: handleGoogleLogin,
       });
       
@@ -74,7 +74,8 @@ function Login() {
     
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/login', user);
+      console.log('Trying to login with user');
+      const { data } = await axios.post('/api/login', user);
       // Get JWT token 
       localStorage.setItem('token', data.token);
       window.location.href = '/dashboard';
@@ -86,19 +87,17 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = async (response) => {
+  const handleGoogleLogin = async () => {
     try {
-      const { data } = await axios.post('http://localhost:5000/google-login', {
-        token: response.credential, // Google ID Token
-      });
-      // Get JWT token
-      localStorage.setItem('token', data.token);
-      window.location.href = '/dashboard';
+        const response = await axios.get('/api/google-login');
+        const googleAuthUrl = response.data.authUrl;
+
+        // Redirect user to Google Login page
+        window.location.href = googleAuthUrl;
     } catch (error) {
-      console.error('Google login error:', error);
-      alert('Google login failed. Please try again.');
+        console.error('Error fetching Google login URL', error);
     }
-  };
+};
 
   return (
     <div className="music-auth-container">
@@ -153,7 +152,7 @@ function Login() {
         </div>
         
         <div id="google-button" className="google-button-container"></div>
-        
+
         <div className="auth-link">
           Don't have an account? <a href="/register">Join Now</a>
         </div>

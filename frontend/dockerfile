@@ -13,3 +13,28 @@ EXPOSE 3000
 
 # Start the frontend
 CMD ["npm", "start"]
+
+#############################
+# this part is from chat and feen don't know thing
+# FROM node:20.17.0
+
+# WORKDIR /app
+
+# # Copy package.json and install dependencies
+# COPY package.json package-lock.json ./
+# RUN npm install
+
+# # Copy all project files
+# COPY . .
+
+# # Build React app
+# RUN npm run build
+
+# # Install a lightweight static server
+# RUN npm install -g serve
+
+# # Expose port
+# EXPOSE 3000
+
+# # Serve the built React app
+# CMD ["serve", "-s", "build", "-l", "3000"]
