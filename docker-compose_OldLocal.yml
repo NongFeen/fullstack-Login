@@ -22,7 +22,8 @@ services:
 
   # Backend service (Node.js)
   backend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen:latest
+    build:
+      context: ./backend  # Directory for the Backend Dockerfile
     container_name: login_back
     environment:
       - Google_Auth=${Google_Auth}
@@ -30,7 +31,7 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
       - DB_database=${DB_database}
-      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GOOGLE_REDIRECT_URI=$(GOOGLE_REDIRECT_URI)
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
@@ -42,7 +43,8 @@ services:
 
   # Frontend service (React)
   frontend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen-front:latest
+    build:
+      context: ./frontend  # Directory for the Frontend Dockerfile
     container_name: login_front
     ports:
       - "3000:3000"  # Exposing port 3000 for React frontend
