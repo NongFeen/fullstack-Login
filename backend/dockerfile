@@ -21,6 +21,6 @@ FROM base AS development
 COPY --from=build /app/node_modules ./node_modules
 COPY server.js ./
 
-EXPOSE 3001
+EXPOSE 5000
 
 CMD ["node", "server.js"]
