@@ -1,16 +1,26 @@
-# Use Node.js base image
-FROM node:20.17.0
+ARG NODE_VERSION=23-alpine
+FROM node:${NODE_VERSION} AS base
 
-# Set working directory
+RUN apk update
+RUN apk add --no-cache \
+    libc6-compat \
+    && rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY server.js .
-COPY package.json package-lock.json ./
-RUN npm install
+###################
+FROM base AS build
 
+COPY package*.json ./
 
-EXPOSE 5000
+RUN npm ci
 
-# Start the backend server
+###################
+FROM base AS development
+
+COPY --from=build /app/node_modules ./node_modules
+COPY server.js ./
+
+EXPOSE 3000
+
 CMD ["node", "server.js"]
