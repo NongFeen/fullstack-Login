@@ -79,7 +79,6 @@ function Login() {
         </button>
         
         <div className="divider">
-          <span>OR</span>
         </div>
         
         <button 
