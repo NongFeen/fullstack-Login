@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 import './UserDashboard.css';
 
 function UserDashboard() {
@@ -12,14 +13,14 @@ function UserDashboard() {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     if (!token) {
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'user') {
-          localStorage.removeItem('token');
+          Cookies.remove('token');
           navigate('/login');
         } else {
           setUsername(decoded.username || 'User');
@@ -54,7 +55,7 @@ function UserDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('token');
     navigate('/login');
   };
 

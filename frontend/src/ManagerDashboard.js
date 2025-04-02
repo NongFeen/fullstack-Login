@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 import './ManagerDashboard.css';
 
 function ManagerDashboard() {
@@ -11,14 +12,14 @@ function ManagerDashboard() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     if (!token) {
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'manager') {
-          localStorage.removeItem('token');
+          Cookies.remove('token');
           navigate('/login');
         } else {
           fetchMockData();
@@ -55,7 +56,7 @@ function ManagerDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('token');
     navigate('/login');
   };
 

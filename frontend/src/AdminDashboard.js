@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -12,20 +13,20 @@ function AdminDashboard() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-   const token = localStorage.getItem('token');
+    const token = Cookies.get('token'); // Get token from cookies
     if (!token) {
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'admin') {
-          localStorage.removeItem('token');
+          Cookies.remove('token'); // Remove token if not admin
           navigate('/login');
         } else {
-          // Fetch mock data for demonstration
-          fetchMockData(); 
+          fetchMockData();
         }
       } catch (error) {
+        Cookies.remove('token');
         navigate('/login');
       }
     }
@@ -56,7 +57,7 @@ function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('token'); // Remove token from cookies
     navigate('/login');
   };
 

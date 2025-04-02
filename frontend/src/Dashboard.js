@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';  // useNavigate is the correct hook for navigation
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 function Dashboard() {
   // const [role, setRole] = useState('');
   const navigate = useNavigate(); // Create a navigate object for navigation
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Check if JWT is stored in localStorage
+    const token = Cookies.get('token'); // Check if JWT is stored in localStorage
 
     // If no token in localStorage, check the URL for token and store it in localStorage
     if (!token) {
@@ -39,7 +40,7 @@ function Dashboard() {
 
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token
+    Cookies.remove('token'); // Remove the token
     window.location.href = '/login'; // Redirect to login page
   };
 

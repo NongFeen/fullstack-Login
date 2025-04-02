@@ -13,7 +13,7 @@ function Login() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     if (token) {
-      localStorage.setItem('token', token);
+      Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
       navigate('/dashboard');
     }
   }, [navigate]);
