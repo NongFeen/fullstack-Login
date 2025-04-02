@@ -35,7 +35,9 @@ passport.use(new GoogleStrategy(
     {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'https://feenfeenfeen.online/api/auth/google/callback'
+        callbackURL: `${process.env.APIURL}/auth/google/callback`
+        // callbackURL: 'https://feenfeenfeen.online/api/auth/google/callback'`
+
     },
     async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
@@ -78,7 +80,7 @@ passport.use(new GoogleStrategy(
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-    res.redirect(`https://feenfeenfeen.online/dashboard?token=${req.user.token}`);
+    res.redirect(`${process.env.WEBURL}/dashboard?token=${req.user.token}`);
   });
 
 // Register

@@ -10,11 +10,11 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS user_profiles (
-  user_id INT(11) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  surname VARCHAR(255) NOT NULL,
+  user_id INT(11) ,
+  name VARCHAR(255) ,
+  surname VARCHAR(255) ,
   email VARCHAR(255) NOT NULL UNIQUE,
-  age INT(11) NOT NULL,
+  age INT(11) ,
   tel VARCHAR(15),
   PRIMARY KEY (user_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

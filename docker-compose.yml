@@ -22,7 +22,9 @@ services:
 
   # Backend service (Node.js)
   backend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen:latest
+    build:
+      context: ./backend
+    # image: registry.nipa.cloud/kmitl-registry/feenfeenfeen-front:latest
     container_name: login_back
     environment:
       - Google_Auth=${Google_Auth}
@@ -32,8 +34,9 @@ services:
       - DB_database=${DB_database}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - FRONTEND_URL=${FRONTEND_URL}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - APIURL=${APIURL}
+      - WEBURL=${WEBURL}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
@@ -45,7 +48,9 @@ services:
 
   # Frontend service (React)
   frontend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen-front:latest
+    build:
+      context: ./frontend
+    # image: registry.nipa.cloud/kmitl-registry/feenfeenfeen-front:latest
     container_name: login_front
     ports:
       - "3000:3000"  # Exposing port 3000 for React frontend
