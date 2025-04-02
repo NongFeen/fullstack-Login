@@ -4,11 +4,16 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const mysql = require('mysql2');
-const { OAuth2Client } = require('google-auth-library');
+const passport = require('passport');
+const session = require('express-session');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Database Connection
 const db = mysql.createConnection({
@@ -17,10 +22,8 @@ const db = mysql.createConnection({
     password: '',
     database: process.env.DB_database
 });
-
 console.log("connecting to database");
 db.connect(err => {
-
     if (err) {
         console.error('Database connection failed:', err);
         return;
@@ -28,8 +31,35 @@ db.connect(err => {
     console.log("MySQL Connected...");
 });
 
-// Google OAuth2 Client setup
-const googleClient = new OAuth2Client(process.env.Google_Auth);
+passport.use(new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: 'https://feenfeenfeen.online/api/auth/google/callback'
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const email = profile.emails[0].value;
+      db.query('SELECT * FROM users WHERE username = ?', [email], (err, results) => {
+        if (err) return done(err);
+        let user = results[0];
+        if (!user) {
+          db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', [email,'', 'user'], (err) => {
+            if (err) return done(err);
+            user = { email, role: 'user' };
+            const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            done(null, { user, token });
+          });
+        } else {
+          const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+          done(null, { user, token });
+        }
+      });
+    }
+  ));
+app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+app.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
+    res.redirect(`https://feenfeenfeen.online/dashboard?token=${req.user.token}`);
+  });
 
 // Register
 app.post('/register', async (req, res) => {
@@ -57,94 +87,6 @@ app.post('/login', (req, res) => {
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     });
-});
-
-// Google Login
-app.get('/google-login', (req, res) => {
-    const googleAuthUrl = googleClient.generateAuthUrl({
-        access_type: 'offline', // offline means you'll get a refresh token too
-        scope: ['openid', 'profile', 'email'],
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI // this should be your backend callback URL
-    });
-    res.json({ authUrl: googleAuthUrl });
-});
-
-// Google OAuth2 Callback (redirect after user logs in)
-app.get('/google-callback', async (req, res) => {
-    const code = req.query.code;
-    try {
-        const { tokens } = await googleClient.getToken(code);
-        googleClient.setCredentials(tokens);
-
-        const ticket = await googleClient.verifyIdToken({
-            idToken: tokens.id_token,
-            audience: process.env.Google_Auth,  // Your Google Client ID
-        });
-        const payload = ticket.getPayload();
-
-        // Check if the user exists in the database, otherwise create them
-        db.query('SELECT * FROM users WHERE username = ?', [payload.email], (err, users) => {
-            if (err) return res.status(500).send(err);
-            
-            let user = users[0];
-            if (!user) {
-                // Create a new user if not found
-                db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
-                [payload.email, '', 'user'], (err, result) => {
-                    if (err) return res.status(500).send(err);
-
-                    user = { id: result.insertId, username: payload.email, role: 'user' };
-                    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                    res.json({ token });
-                });
-            } else {
-                // User exists, generate JWT token
-                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                res.json({ token });
-            }
-        });
-    } catch (error) {
-        res.status(400).send('Invalid Google Token');
-    }
-});
-
-//old googlelogin code
-// didn't use anymore
-// leave it as memory
-app.post('/google-login', async (req, res) => {
-    console.log("logging in with google");
-    const { token } = req.body;
-    try {
-        const ticket = await googleClient.verifyIdToken({
-            idToken: token,
-            audience: process.env.Google_Auth,  // Your Google Client ID
-        });
-        const payload = ticket.getPayload();
-
-        // Check if the user exists in the database, otherwise create them
-        db.query('SELECT * FROM users WHERE username = ?', [payload.email], (err, users) => {
-            if (err) return res.status(500).send(err);
-            
-            let user = users[0];
-            if (!user) {
-                // Create a new user if not found
-                db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
-                [payload.email, '', 'user'], (err, result) => {
-                    if (err) return res.status(500).send(err);
-
-                    user = { id: result.insertId, username: payload.email, role: 'user' };
-                    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                    res.json({ token });
-                });
-            } else {
-                // User exists, generate JWT token
-                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                res.json({ token });
-            }
-        });
-    } catch (error) {
-        res.status(400).send('Invalid Google Token');
-    }
 });
 
 // Protected Route
