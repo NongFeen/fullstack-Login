@@ -1,70 +1,26 @@
+// frontend/Login.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './MusicTheme.css';
 
 function Login() {
   const [user, setUser] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    // Create floating music notes animation
-    const createMusicNotes = () => {
-      const container = document.querySelector('.music-notes');
-      if (!container) return;
-      
-      const noteCount = 20;
-      const noteSymbols = ['♪', '♫', '♬', '♩', '♭', '♮', '♯'];
-      
-      container.innerHTML = '';
-      
-      for (let i = 0; i < noteCount; i++) {
-        const note = document.createElement('div');
-        note.className = 'music-note';
-        note.textContent = noteSymbols[Math.floor(Math.random() * noteSymbols.length)];
-        note.style.left = `${Math.random() * 100}%`;
-        note.style.animationDuration = `${Math.random() * 10 + 10}s`;
-        note.style.animationDelay = `${Math.random() * 5}s`;
-        container.appendChild(note);
-      }
-    };
-    
-    createMusicNotes();
-    
-    // Load Google sign-in script
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.onload = () => setIsGoogleScriptLoaded(true);
-    document.body.appendChild(script);
-
-    return () => {
-      // Clean up
-      const container = document.querySelector('.music-notes');
-      if (container) {
-        container.innerHTML = '';
-      }
-      
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isGoogleScriptLoaded) {
-      // Initialize Google Sign-In only after the script is loaded
-      window.google.accounts.id.initialize({
-        client_id: '771100970427-3a06j40hmej88p90qmekvf56kt3u0b0c.apps.googleusercontent.com', 
-        callback: handleGoogleLogin,
-      });
-      
-      window.google.accounts.id.renderButton(
-        document.getElementById('google-button'),
-        { theme: 'filled_black', size: 'large', width: '100%', text: 'signin_with', shape: 'pill' }
-      );
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    if (token) {
+      localStorage.setItem('token', token);
+      navigate('/dashboard');
     }
-  }, [isGoogleScriptLoaded]);
+  }, [navigate]);
+  
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://feenfeenfeen.online/api/auth/google';
+  };
 
   const handleLogin = async () => {
     if (!user.username || !user.password) {
@@ -74,11 +30,9 @@ function Login() {
     
     setLoading(true);
     try {
-      console.log('Trying to login with user');
-      const { data } = await axios.post('/api/login', user);
-      // Get JWT token 
+      const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
       localStorage.setItem('token', data.token);
-      window.location.href = '/dashboard';
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       alert('Login failed. Please check your credentials.');
@@ -87,37 +41,19 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-        const response = await axios.get('/api/google-login');
-        const googleAuthUrl = response.data.authUrl;
-
-        // Redirect user to Google Login page
-        window.location.href = googleAuthUrl;
-    } catch (error) {
-        console.error('Error fetching Google login URL', error);
-    }
-};
-
   return (
     <div className="music-auth-container">
-      <div className="music-notes"></div>
-      <div className="vinyl-decoration vinyl-top-left"></div>
-      <div className="vinyl-decoration vinyl-bottom-right"></div>
-      
       <div className="music-auth-card">
         <div className="music-auth-header">
-          <h2>Welcome Back</h2>
+          <h2>Login</h2>
           <div className="music-divider"></div>
-          <p className="subtitle">Sign in to your FeenFeenFeen account</p>
+          <p className="subtitle">Sign in to FeenFeenFeen</p>
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">Username</label>
           <input 
-            id="username"
             type="text" 
-            placeholder="Enter your username" 
+            placeholder="Enter your email" 
             value={user.username}
             onChange={(e) => setUser({ ...user, username: e.target.value })}
             className="music-input"
@@ -125,9 +61,7 @@ function Login() {
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Password</label>
           <input 
-            id="password"
             type="password" 
             placeholder="Enter your password" 
             value={user.password}
@@ -137,24 +71,26 @@ function Login() {
         </div>
         
         <button 
-          className={`music-button ${loading ? 'loading' : ''}`}
-          onClick={handleLogin}
+          onClick={handleLogin} 
           disabled={loading}
+          className="music-button"
         >
-          {loading ? 
-            <span className="loading-text">Signing In<span className="dots">...</span></span> : 
-            'Sign In'
-          }
+          {loading ? 'Signing In...' : 'Sign In'}
         </button>
         
-        <div className="auth-divider">
+        <div className="divider">
           <span>OR</span>
         </div>
         
-        <div id="google-button" className="google-button-container"></div>
-
+        <button 
+          onClick={handleGoogleLogin}
+          className="music-button google-button"
+        >
+          Sign in with Google
+        </button>
+        
         <div className="auth-link">
-          Don't have an account? <a href="/register">Join Now</a>
+          Don't have an account? <a href="/register">Register Now</a>
         </div>
       </div>
     </div>
