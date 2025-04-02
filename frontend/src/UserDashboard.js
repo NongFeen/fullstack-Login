@@ -193,6 +193,7 @@ function UserDashboard() {
           <h1>Welcome, {username}</h1>
           <p>Discover new music and expand your collection</p>
         </div>
+
         {activeTab === "browse" && (
           <div className="dashboard-section">
             <h2>Browse Our Catalog</h2>
@@ -227,6 +228,7 @@ function UserDashboard() {
             </div>
           </div>
         )}
+
         {activeTab === "cart" && (
           <div className="dashboard-section">
             <h2>Your Cart</h2>
@@ -284,6 +286,7 @@ function UserDashboard() {
             )}
           </div>
         )}
+
         {activeTab === "orders" && (
           <div className="dashboard-section">
             <h2>Your Orders</h2>
@@ -339,13 +342,12 @@ function UserDashboard() {
             )}
           </div>
         )}
-        // In UserDashboard.js, in the profile tab section
+
         {activeTab === "profile" && (
           <div className="dashboard-section">
             <h2>Your Profile</h2>
 
             <div className="profile-card">
-              {/* Profile header remains the same */}
               <div className="profile-header">
                 <div className="profile-avatar">
                   {username.charAt(0).toUpperCase()}
@@ -356,9 +358,21 @@ function UserDashboard() {
                 </div>
               </div>
 
-              {/* Profile stats remains the same */}
               <div className="profile-stats">
-                {/* ... existing stats ... */}
+                <div className="stat-item">
+                  <span className="stat-value">{orders.length}</span>
+                  <span className="stat-label">Orders</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">
+                    {orders.reduce((sum, order) => sum + order.items.length, 0)}
+                  </span>
+                  <span className="stat-label">Items Purchased</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">⭐</span>
+                  <span className="stat-label">Standard Member</span>
+                </div>
               </div>
 
               <div className="profile-section">
@@ -373,16 +387,6 @@ function UserDashboard() {
                 <div className="form-group">
                   <label>Change Password</label>
                   <button className="secondary-button">Update Password</button>
-                </div>
-                {/* Add a new button for Edit Profile */}
-                <div className="form-group">
-                  <label>Edit Personal Information</label>
-                  <button
-                    className="secondary-button"
-                    onClick={() => navigate("/profile")}
-                  >
-                    Edit Profile
-                  </button>
                 </div>
               </div>
             </div>
