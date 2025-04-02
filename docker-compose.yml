@@ -31,11 +31,14 @@ services:
       - DB_USER=${DB_USER}
       - DB_database=${DB_database}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     ports:
       - "5000:5000"  # Exposing port 5000 for API
     depends_on:
        db:
-        condition: service_healthy #make sure db is ready 
+        condition: service_healthy #make sure db is ready
     # networks:
     #   - app_network
     command: npm start  # Start backend server
@@ -55,7 +58,7 @@ services:
 #default as bridge mode anyway dont care
 # networks:
 #   app_network:
-#     driver: bridge  
+#     driver: bridge
 
 volumes:
   db_data:
