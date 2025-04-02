@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
+import { useCookies } from 'react-cookie'; // Import the useCookies hook
 import './UserDashboard.css';
+
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -11,16 +12,16 @@ function UserDashboard() {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [username, setUsername] = useState('');
-
+  const [cookies, setCookie, removeCookie] = useCookies(['Feentoken']);
   useEffect(() => {
-    const token = Cookies.get('token');
+    const token = cookies.Feentoken;
     if (!token) {
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'user') {
-          Cookies.remove('token');
+          removeCookie('Feentoken');
           navigate('/login');
         } else {
           setUsername(decoded.username || 'User');
@@ -55,7 +56,7 @@ function UserDashboard() {
   };
 
   const handleLogout = () => {
-    Cookies.remove('token');
+    removeCookie('Feentoken');
     navigate('/login');
   };
 

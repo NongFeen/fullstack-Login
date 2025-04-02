@@ -12,7 +12,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Enable cookie parsing
-app.use(cors({ origin: 'https://feenfeenfeen.online', credentials: true })); // Allow frontend to send cookies
+app.use(cors({ origin: `${process.env.WEBURL}`, credentials: true })); // Allow frontend to send cookies
 app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -38,7 +38,8 @@ passport.use(new GoogleStrategy(
     {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'https://feenfeenfeen.online/api/auth/google/callback'
+        callbackURL: `${process.env.APIURL}/auth/google/callback`
+       
     },
     async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
@@ -81,13 +82,14 @@ passport.use(new GoogleStrategy(
 app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
 app.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-    res.cookie('token', req.user.token, {
+    res.cookie('Feentoken', req.user.token, {
         httpOnly: true,
         secure: true,
         sameSite: 'Strict',
         maxAge: 7200000 // 1 hour
     });
-    res.redirect('https://feenfeenfeen.online/dashboard');
+    // res.redirect('https://feenfeenfeen.online/dashboard');
+    res.redirect(`${process.env.WEBURL}/dashboard`);
 });
 
 // Register Route
@@ -127,7 +129,7 @@ app.post('/login', (req, res) => {
 
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.cookie('token', token, {
+        res.cookie('Feentoken', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'Strict',
@@ -140,13 +142,14 @@ app.post('/login', (req, res) => {
 
 // Logout Route (Clears Cookie)
 app.post('/logout', (req, res) => {
-    res.clearCookie('token');
+    res.clearCookie('Feentoken');
     res.json({ message: "Logged out successfully" });
 });
 
 // Middleware for Protecting Routes
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.Feentoken;
+    console.log(req);
     if (!token) return res.status(403).json({ message: 'No token provided' });
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -158,6 +161,8 @@ const verifyToken = (req, res, next) => {
 
 // Protected Route (Requires Authentication)
 app.get('/dashboard', verifyToken, (req, res) => {
+    console.log("going to dashboard");
+    console.log(verifyToken);
     res.json({ role: req.user.role });
 });
 

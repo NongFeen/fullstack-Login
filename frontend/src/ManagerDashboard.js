@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
+import { useCookies } from 'react-cookie'; // Import the useCookies hook
 import './ManagerDashboard.css';
+
 
 function ManagerDashboard() {
   const navigate = useNavigate();
@@ -10,16 +11,17 @@ function ManagerDashboard() {
   const [inventory, setInventory] = useState([]);
   const [orders, setOrders] = useState([]);
   const [stats, setStats] = useState({});
-
+  const [cookies, setCookie, removeCookie] = useCookies(['Feentoken']);
   useEffect(() => {
-    const token = Cookies.get('token');
+    const token = cookies.Feentoken;
     if (!token) {
+      console.log("No Token" + token)
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'manager') {
-          Cookies.remove('token');
+          removeCookie('Feentoken');
           navigate('/login');
         } else {
           fetchMockData();
@@ -56,7 +58,7 @@ function ManagerDashboard() {
   };
 
   const handleLogout = () => {
-    Cookies.remove('token');
+    removeCookie('Feentoken');
     navigate('/login');
   };
 

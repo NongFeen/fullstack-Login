@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCookies } from 'react-cookie'; // Import the useCookies hook
 import './MusicTheme.css';
 
 function Login() {
+  const [cookies, setCookie, removeCookie] = useCookies(['Feentoken']);
   const [user, setUser] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -13,13 +15,14 @@ function Login() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     if (token) {
-      Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
+      setCookie('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
       navigate('/dashboard');
     }
   }, [navigate]);
   
   const handleGoogleLogin = () => {
-    window.location.href = 'https://feenfeenfeen.online/api/auth/google';
+    window.location.href = 'http://localhost:5000/auth/google';
+    // window.location.href = 'https://feenfeenfeen.online/api/auth/google';
   };
 
   const handleLogin = async () => {
@@ -30,8 +33,9 @@ function Login() {
     
     setLoading(true);
     try {
-      const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
-      localStorage.setItem('token', data.token);
+      const { data } = await axios.post('http://localhost:5000/api/login', user);
+      // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
+      localStorage.setItem('Feentoken', data.Feentoken);
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);

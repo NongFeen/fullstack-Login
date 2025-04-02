@@ -1,53 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // useNavigate is the correct hook for navigation
+import React, { useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
+import { useCookies } from 'react-cookie'; // Import the useCookies hook
 
 function Dashboard() {
-  // const [role, setRole] = useState('');
-  const navigate = useNavigate(); // Create a navigate object for navigation
+  const navigate = useNavigate();
+  
+  // Use the useCookies hook to manage cookies in React
+  const [cookies, setCookie, removeCookie] = useCookies(["Feentoken"]);  
+  console.log(cookies.Feentoken);
+  const redirectUser = useCallback((role) => {
+    const roleRoutes = {
+      admin: '/admin-dashboard',
+      manager: '/manager-dashboard',
+      user: '/user-dashboard',
+    };
+    navigate(roleRoutes[role] || '/login');
+  }, [navigate]);
+
+  const handleLogout = useCallback(() => {
+    removeCookie("Feentoken");  // Remove token from cookies
+    navigate('/login');
+  }, [navigate, removeCookie]);
 
   useEffect(() => {
-    const token = Cookies.get('token'); // Check if JWT is stored in localStorage
-
-    // If no token in localStorage, check the URL for token and store it in localStorage
+    let token = cookies.Feentoken;  // Access token from cookies
+    console.log(cookies.Feentoken);
     if (!token) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const wtoken = urlParams.get('token');
-      if (wtoken) {
-        localStorage.setItem('token', wtoken);  // Store the token in localStorage
-        navigate(window.location.pathname);  // Reload to update state and handle navigation
-      }
+      console.log("no Token");
     } else {
       try {
-        // Decode the JWT token to extract the role
         const decoded = jwtDecode(token);
-
-        // Redirect based on the role using navigate
-        if (decoded.role === 'admin') {
-          navigate('/admin-dashboard');
-        } else if (decoded.role === 'manager') {
-          navigate('/manager-dashboard');
-        } else if (decoded.role === 'user') {
-          navigate('/user-dashboard');
-        }
+        redirectUser(decoded.role);
       } catch (error) {
-        console.error("Invalid token", error);
+        console.error('Invalid token', error);
         handleLogout();
       }
     }
-  }, [navigate]);
-
-
-  const handleLogout = () => {
-    Cookies.remove('token'); // Remove the token
-    window.location.href = '/login'; // Redirect to login page
-  };
+  }, [cookies, navigate, handleLogout, redirectUser, setCookie]); // Added cookies as dependency to trigger effect on cookie change
 
   return (
     <div>
       <h2>Loading Dashboard...</h2>
-      {/* Optionally display loading text until redirected */}
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

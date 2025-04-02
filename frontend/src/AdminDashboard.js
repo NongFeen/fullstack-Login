@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
+import { useCookies } from 'react-cookie'; // Import the useCookies hook
 import './AdminDashboard.css';
+
+
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -11,22 +13,22 @@ function AdminDashboard() {
   const [newProduct, setNewProduct] = useState({ name: '', artist: '', price: '', category: 'vinyl', stock: '', imageUrl: '' });
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
-
+  const [cookies, setCookie, removeCookie] = useCookies(['Feentoken']);
   useEffect(() => {
-    const token = Cookies.get('token'); // Get token from cookies
+    const token = cookies.Feentoken; // Get token from cookies
     if (!token) {
       navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'admin') {
-          Cookies.remove('token'); // Remove token if not admin
+          removeCookie('Feentoken'); // Remove token if not admin
           navigate('/login');
         } else {
           fetchMockData();
         }
       } catch (error) {
-        Cookies.remove('token');
+        removeCookie('Feentoken');
         navigate('/login');
       }
     }
@@ -57,7 +59,8 @@ function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    Cookies.remove('token'); // Remove token from cookies
+    
+    removeCookie('Feentoken'); // Remove token from cookies
     navigate('/login');
   };
 
