@@ -7,12 +7,20 @@ function Dashboard() {
   const navigate = useNavigate(); // Create a navigate object for navigation
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = localStorage.getItem('token'); // Check if JWT is stored in localStorage
+
+    // If no token in localStorage, check the URL for token and store it in localStorage
+    if (!token) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const wtoken = urlParams.get('token');
+      if (wtoken) {
+        localStorage.setItem('token', wtoken);  // Store the token in localStorage
+        navigate(window.location.pathname);  // Reload to update state and handle navigation
+      }
+    } else {
       try {
         // Decode the JWT token to extract the role
         const decoded = jwtDecode(token);
-        // setRole(decoded.role);
 
         // Redirect based on the role using navigate
         if (decoded.role === 'admin') {
@@ -26,10 +34,9 @@ function Dashboard() {
         console.error("Invalid token", error);
         handleLogout();
       }
-    } else {
-      window.location.href = '/login'; // Redirect to login if no token
     }
   }, [navigate]);
+
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove the token
