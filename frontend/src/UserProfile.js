@@ -1,186 +1,115 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import "./UserDashboard.css"; // Using existing CSS
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+import './UserDashboard.css'; // Using same CSS file
 
 function UserProfile() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [profile, setProfile] = useState({
-    name: "",
-    surname: "",
-    email: "",
-    age: "",
-    tel: "",
+    name: '',
+    surname: '',
+    email: '',
+    age: '',
+    tel: ''
   });
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [decodedToken, setDecodedToken] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (!token) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
     try {
-      // Decode JWT token to verify user identity
       const decoded = jwtDecode(token);
-      setDecodedToken(decoded);
-
-      // Fetch Profile from API
-      const fetchProfile = async () => {
-        try {
-          const response = await axios.get(
-            "https://feenfeenfeen.online/api/user/profile",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-
-          // Verify that profile data matches current user
-          if (
-            decoded.username &&
-            response.data.email &&
-            decoded.username !== response.data.email &&
-            decoded.role !== "admin"
-          ) {
-            setError("You are not authorized to view this profile");
-            setLoading(false);
-            return;
-          }
-
-          setProfile({
-            name: response.data.name || "",
-            surname: response.data.surname || "",
-            email: response.data.email || "",
-            age: response.data.age || "",
-            tel: response.data.tel || "",
-          });
-          setLoading(false);
-        } catch (err) {
-          console.error("Error fetching profile:", err);
-          setError("Failed to load profile data");
-          setLoading(false);
-        }
-      };
-
-      fetchProfile();
-    } catch (err) {
-      console.error("Invalid token:", err);
-      localStorage.removeItem("token");
-      navigate("/login");
+      setUsername(decoded.username || 'User');
+      fetchUserProfile(token);
+    } catch (error) {
+      console.error('Token error:', error);
+      localStorage.removeItem('token');
+      navigate('/login');
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
+  const fetchUserProfile = async (token) => {
+    setLoading(true);
+    try {
+      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Set profile data, handling null values
+      const profileData = response.data;
+      setProfile({
+        name: profileData.name || '',
+        surname: profileData.surname || '',
+        email: profileData.email || '',
+        age: profileData.age || '',
+        tel: profileData.tel || ''
+      });
+    } catch (err) {
+      console.error('Failed to fetch profile:', err);
+      setError('Failed to load profile. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfile((prev) => ({
-      ...prev,
-      [name]:
-        name === "age" ? (value === "" ? "" : parseInt(value) || "") : value,
-    }));
+    setProfile({
+      ...profile,
+      [name]: value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setUpdateSuccess(false);
-
-    const token = localStorage.getItem("token");
-
-    // Verify user is not changing email unless they're an admin
-    if (
-      decodedToken &&
-      decodedToken.username &&
-      profile.email !== decodedToken.username &&
-      decodedToken.role !== "admin"
-    ) {
-      setError("You cannot change the email to a different user");
-      setLoading(false);
+    setError('');
+    setSuccess('');
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
       return;
     }
 
     try {
-      await axios.put("https://feenfeenfeen.online/api/user/profile", profile, {
+      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
-
-      setUpdateSuccess(true);
-      setLoading(false);
-
-      // Scroll to top to show success message
-      window.scrollTo(0, 0);
+      
+      setSuccess('Profile updated successfully!');
+      setIsEditing(false);
     } catch (err) {
-      console.error("Error updating profile:", err);
-
-      // Display error message from server if available
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
-      } else {
-        setError("Failed to update profile data");
-      }
-
-      setLoading(false);
+      console.error('Failed to update profile:', err);
+      setError('Failed to update profile. Please try again.');
     }
   };
 
-  const handleGoBack = () => {
-    navigate("/dashboard");
+  const handleCancel = () => {
+    // Reset to original values by re-fetching
+    const token = localStorage.getItem('token');
+    fetchUserProfile(token);
+    setIsEditing(false);
+    setError('');
+    setSuccess('');
   };
 
-  // If unauthorized access
-  if (error && error.includes("not authorized")) {
-    return (
-      <div className="music-dashboard user-dashboard">
-        <div className="dashboard-content">
-          <div className="error-state">
-            <div className="error-icon">🔒</div>
-            <h2>Access Denied</h2>
-            <p>{error}</p>
-            <button className="secondary-button" onClick={handleGoBack}>
-              Return to Dashboard
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="music-dashboard user-dashboard">
-        <div className="dashboard-content">
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>Loading your profile...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="music-dashboard user-dashboard">
-        <div className="dashboard-content">
-          <div className="error-state">
-            <div className="error-icon">⚠️</div>
-            <p>{error}</p>
-            <button className="secondary-button" onClick={handleGoBack}>
-              Return to Dashboard
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   return (
     <div className="music-dashboard user-dashboard">
@@ -189,132 +118,169 @@ function UserProfile() {
           <h2>FeenFeenFeen</h2>
           <div className="user-badge">MY MUSIC</div>
         </div>
-
+        
         <div className="dashboard-nav">
-          <button className="nav-item" onClick={handleGoBack}>
-            Dashboard
+          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+            Browse Music
           </button>
-          <button className="nav-item active">Edit Profile</button>
+          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+            Cart
+          </button>
+          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+            My Orders
+          </button>
+          <button className="nav-item active">
+            Profile
+          </button>
         </div>
-
-        <button
-          className="logout-button"
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
-          }}
-        >
+        
+        <button className="logout-button" onClick={handleLogout}>
           Logout
         </button>
       </div>
-
+      
       <div className="dashboard-content">
         <div className="dashboard-header">
-          <h1>Edit Your Profile</h1>
+          <h1>Your Profile</h1>
           <p>Update your personal information</p>
         </div>
-
+        
         <div className="dashboard-section">
           <div className="profile-card">
-            {updateSuccess && (
-              <div className="success-message">
-                Profile updated successfully!
+            <div className="profile-header">
+              <div className="profile-avatar">
+                {profile.name ? profile.name.charAt(0).toUpperCase() : username.charAt(0).toUpperCase()}
               </div>
+              <div className="profile-name">
+                <h3>{profile.name ? `${profile.name} ${profile.surname}` : username}</h3>
+                <p className="profile-role">Music Enthusiast</p>
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="loading-indicator">Loading profile...</div>
+            ) : (
+              <>
+                {error && <div className="error-message">{error}</div>}
+                {success && <div className="success-message">{success}</div>}
+                
+                <form onSubmit={handleSubmit} className="profile-form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>First Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={profile.name}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        className="music-input"
+                        placeholder="Enter your first name"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Last Name</label>
+                      <input
+                        type="text"
+                        name="surname"
+                        value={profile.surname}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        className="music-input"
+                        placeholder="Enter your last name"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={profile.email}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                      className="music-input"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                  
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Age</label>
+                      <input
+                        type="number"
+                        name="age"
+                        value={profile.age}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        className="music-input"
+                        placeholder="Enter your age"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Phone Number</label>
+                      <input
+                        type="tel"
+                        name="tel"
+                        value={profile.tel}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        className="music-input"
+                        placeholder="Enter your phone number"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="profile-actions">
+                    {isEditing ? (
+                      <>
+                        <button type="submit" className="update-button">Save Changes</button>
+                        <button type="button" className="cancel-button" onClick={handleCancel}>
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button 
+                        type="button" 
+                        className="edit-button" 
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit Profile
+                      </button>
+                    )}
+                  </div>
+                </form>
+                
+                <div className="profile-section">
+                  <h4>Account Settings</h4>
+                  <div className="form-group">
+                    <label>Email Notifications</label>
+                    <div className="toggle-switch">
+                      <input type="checkbox" id="notifications" defaultChecked />
+                      <label htmlFor="notifications"></label>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Change Password</label>
+                    <button className="secondary-button">Update Password</button>
+                  </div>
+                </div>
+              </>
             )}
-
-            <form onSubmit={handleSubmit} className="profile-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="name">First Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={profile.name}
-                    onChange={handleChange}
-                    className="music-input"
-                    placeholder="Enter your first name"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="surname">Last Name</label>
-                  <input
-                    type="text"
-                    id="surname"
-                    name="surname"
-                    value={profile.surname}
-                    onChange={handleChange}
-                    className="music-input"
-                    placeholder="Enter your last name"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={profile.email}
-                  onChange={handleChange}
-                  className="music-input"
-                  placeholder="Enter your email"
-                  required
-                  disabled={decodedToken && decodedToken.role !== "admin"} // Only admin can edit email
-                />
-                {decodedToken && decodedToken.role !== "admin" && (
-                  <small className="form-text">Email cannot be changed</small>
-                )}
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="age">Age</label>
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    value={profile.age}
-                    onChange={handleChange}
-                    className="music-input"
-                    placeholder="Enter your age"
-                    min="1"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="tel">Phone Number</label>
-                  <input
-                    type="tel"
-                    id="tel"
-                    name="tel"
-                    value={profile.tel}
-                    onChange={handleChange}
-                    className="music-input"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={handleGoBack}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="primary-button"
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
+          </div>
+          
+          <div className="membership-card">
+            <h3>Membership Status</h3>
+            <div className="membership-badge">Standard</div>
+            <p>Joined: March 2025</p>
+            <ul className="membership-benefits">
+              <li>Free shipping on orders over $50</li>
+              <li>Early access to new releases</li>
+              <li>Exclusive member-only discounts</li>
+              <li>Personalized recommendations</li>
+            </ul>
+            <button className="upgrade-button">Upgrade to Premium</button>
           </div>
         </div>
       </div>
