@@ -158,7 +158,7 @@ app.post('/register', async (req, res) => {
 
                 // Generate JWT token and set it as a cookie
                 const token = jwt.sign({ id: user_id, role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
-                res.cookie('jwt_token', token, cookieOptions);
+                // res.cookie('jwt_token', token, cookieOptions);
                 res.json({ message: 'User registered and profile created' });
             }
         );
@@ -259,4 +259,22 @@ app.get('/logout', (req, res) => {
     res.json({ message: 'Logged out successfully' });
 });
 
+app.get('/redirect-dashboard', verifyToken, (req, res) => {
+    const role = req.user.role;
+  
+    if (role === 'admin') {
+      res.json({ redirect: '/admin-dashboard' });
+    } else if (role === 'manager') {
+      res.json({ redirect: '/manager-dashboard' });
+    } else if (role === 'user') {
+      res.json({ redirect: '/user-dashboard' });
+    } else {
+      res.status(403).json({ message: 'Unknown role' });
+    }
+  });
+
+app.get('/auth/me', verifyToken, (req, res) => {
+    const { role, id, username } = req.user;
+    res.json({ role, id, username });
+});
 app.listen(5000, () => console.log("Server running on port 5000"));

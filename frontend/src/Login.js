@@ -32,7 +32,15 @@ function Login() {
     
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/login', user);
+      const { data } = await axios.post('http://localhost:5000/login', 
+        user, 
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
       localStorage.setItem('token', data.token);
       navigate('/dashboard');
