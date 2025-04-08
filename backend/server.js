@@ -8,8 +8,10 @@ const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const cookieParser = require('cookie-parser');
+const argon2 = require('argon2');
 
 const app = express();
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 // Basic middleware setup
 app.use(express.json());
@@ -124,45 +126,83 @@ app.get('/auth/google/callback', passport.authenticate('google', { session: fals
     res.redirect(`${process.env.WEBURL || 'http://localhost:3000'}/dashboard`);
 });
 
+const validatePassword = (password) => {
+    const minLength = 8;
+    const upperCase = /[A-Z]/;
+    const lowerCase = /[a-z]/;
+    const numbers = /[0-9]/;
+    const specialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (password.length < minLength) return 'Password must be at least 8 characters long';
+    if (!upperCase.test(password)) return 'Password must contain at least one uppercase letter';
+    if (!lowerCase.test(password)) return 'Password must contain at least one lowercase letter';
+    if (!numbers.test(password)) return 'Password must contain at least one number';
+    if (!specialChar.test(password)) return 'Password must contain at least one special character';
+    return null;  // If all validations pass
+};
+
+// user@example.com
+// MyS3cur3P@ssword!
 // Register
 app.post('/register', async (req, res) => {
     console.log("registering user");
+
     const { username, password, role } = req.body;
+    //validate format
+    try {
+        // Validate email format
+        if (!emailRegex.test(username)) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+        const passwordValidationError = validatePassword(password);
+        if (passwordValidationError) {
+            return res.status(400).json({ message: passwordValidationError });
+        }
+    } catch (error) {
+        console.log(error)
+    }
 
-    // Hash the password before saving it
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Validate password based on OWASP guidelines
 
-    // Insert the new user into the users table
-    db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
-    [username, hashedPassword, role], 
-    function(err, result) {
-        if (err) return res.status(500).send(err);
+    try {
+        // Hash the password before saving it
+        const hashedPassword = await argon2.hash(password);
 
-        const user_id = result.insertId;  // Get the inserted user_id
+        // Insert the new user into the users table
+        db.query('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
+        [username, hashedPassword, role], 
+        function(err, result) {
+            if (err) return res.status(500).send(err);
 
-        // After user is created, create a blank profile in user_profiles
-        const defaultProfile = {
-            user_id: user_id,  // Link profile by user_id
-            name: '',
-            surname: '',
-            email: '',  // You can store the email as the username if not provided
-            age: null,
-            tel: ''
-        };
+            const user_id = result.insertId;  // Get the inserted user_id
 
-        db.query(
-            'INSERT INTO user_profiles (user_id, name, surname, email, age, tel) VALUES (?, ?, ?, ?, ?, ?)',
-            [defaultProfile.user_id, defaultProfile.name, defaultProfile.surname, defaultProfile.email, defaultProfile.age, defaultProfile.tel],
-            function(err) {
-                if (err) return res.status(500).send(err);
+            // After user is created, create a blank profile in user_profiles
+            const defaultProfile = {
+                user_id: user_id,  // Link profile by user_id
+                name: '',
+                surname: '',
+                email: username,  // You can store the email as the username if not provided
+                age: null,
+                tel: ''
+            };
 
-                // Generate JWT token and set it as a cookie
-                const token = jwt.sign({ id: user_id, role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
-                // res.cookie('jwt_token', token, cookieOptions);
-                res.json({ message: 'User registered and profile created' });
-            }
-        );
-    });
+            db.query(
+                'INSERT INTO user_profiles (user_id, name, surname, email, age, tel) VALUES (?, ?, ?, ?, ?, ?)',
+                [defaultProfile.user_id, defaultProfile.name, defaultProfile.surname, defaultProfile.email, defaultProfile.age, defaultProfile.tel],
+                function(err) {
+                    if (err) return res.status(500).send(err);
+
+                    // Generate JWT token and set it as a cookie
+                    const token = jwt.sign({ id: user_id, role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+                    // res.cookie('jwt_token', token, cookieOptions);
+                    res.json({ message: 'User registered and profile created' });
+                }
+            );
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error registering user');
+    }
 });
 
 // Login
@@ -172,8 +212,8 @@ app.post('/login', (req, res) => {
     db.query('SELECT * FROM users WHERE username = ?', [username], async (err, users) => {
         if (err || users.length === 0) return res.status(401).json({ message: 'User not found' });
 
-        const user = users[0];
-        if (!await bcrypt.compare(password, user.password)) 
+        const user = users[0];  
+        if (!await argon2.verify(user.password,password )) 
             return res.status(401).json({ message: 'Invalid credentials' });
         
         // Generate JWT token and set it as a cookie
