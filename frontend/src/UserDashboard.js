@@ -20,7 +20,7 @@ function UserDashboard() {
     age: '',
     tel: ''
   });
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -129,7 +129,7 @@ function UserDashboard() {
   
       if (response.status === 200) {
         setSuccess('Profile updated successfully!');
-        setIsEditing(false);
+        // setIsEditing(false);
       }
     } catch (err) {
       console.error('Failed to update profile:', err);
@@ -150,7 +150,7 @@ function UserDashboard() {
     // Reset to original values by re-fetching
     const token = localStorage.getItem('token');
     fetchUserProfile(token);
-    setIsEditing(false);
+    // setIsEditing(false);
     setError('');
     setSuccess('');
   };
@@ -470,7 +470,7 @@ function UserDashboard() {
                           <button 
                             type="button" 
                             className="edit-button" 
-                            onClick={() => setIsEditing(true)}
+                            // onClick={() => setIsEditing(true)}
                           >
                             Edit Profile
                           </button>

@@ -13,7 +13,7 @@ function UserProfile() {
     age: '',
     tel: ''
   });
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -93,7 +93,7 @@ function UserProfile() {
   
       if (response.status === 200) {
         setSuccess('Profile updated successfully!');
-        setIsEditing(false);
+        // setIsEditing(false);
       }
     } catch (err) {
       console.error('Failed to update profile:', err);
@@ -110,7 +110,7 @@ function UserProfile() {
 
   const handleCancel = () => {
     fetchUserProfile(); // Refetch profile using cookie-auth
-    setIsEditing(false);
+    // setIsEditing(false);
     setError('');
     setSuccess('');
   };
@@ -251,7 +251,7 @@ function UserProfile() {
                       <button 
                         type="button" 
                         className="edit-button" 
-                        onClick={() => setIsEditing(true)}
+                        // onClick={() => setIsEditing(true)}
                       >
                         Edit Profile
                       </button>
