@@ -1,7 +1,8 @@
 /* MusicAuth.css - Shared styles for login and register pages */
 body {
   margin: 0;
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -36,7 +37,7 @@ body {
 }
 
 @keyframes floatNote {
-  0% { 
+  0% {
     transform: translateY(100vh) rotate(0deg);
     opacity: 0;
   }
@@ -46,7 +47,7 @@ body {
   90% {
     opacity: 0.5;
   }
-  100% { 
+  100% {
     transform: translateY(-100px) rotate(360deg);
     opacity: 0;
   }
@@ -81,7 +82,12 @@ body {
 .music-divider {
   position: relative;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.8), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 0, 85, 0.8),
+    transparent
+  );
   margin: 15px auto 20px;
   width: 80%;
 }
@@ -104,7 +110,8 @@ body {
   letter-spacing: 1px;
 }
 
-.music-input, .music-select {
+.music-input,
+.music-select {
   width: 100%;
   padding: 14px 16px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -119,7 +126,8 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.music-input:focus, .music-select:focus {
+.music-input:focus,
+.music-select:focus {
   outline: none;
   border-color: #ff0055;
   box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.2);
@@ -156,13 +164,18 @@ body {
 }
 
 .music-button:before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: all 0.5s;
 }
 
@@ -196,30 +209,42 @@ body {
 }
 
 @keyframes dotLoading {
-  0% { content: '.'; }
-  33% { content: '..'; }
-  66% { content: '...'; }
-  100% { content: '.'; }
+  0% {
+    content: ".";
+  }
+  33% {
+    content: "..";
+  }
+  66% {
+    content: "...";
+  }
+  100% {
+    content: ".";
+  }
 }
 
-.auth-divider {
+.divider {
   display: flex;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+  width: 100%;
   margin: 20px 0;
+  position: relative;
 }
 
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
+.divider::before,
+.divider::after {
+  content: "";
   flex: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid #ddd;
 }
 
-.auth-divider span {
-  padding: 0 10px;
-  color: rgba(255, 255, 255, 0.6);
+.divider span {
+  padding: 0 12px;
+  color: #888;
   font-size: 14px;
+  background: white; /* ป้องกันไม่ให้เส้นทับข้อความ */
+  z-index: 1;
 }
 
 .google-button-container {
@@ -259,7 +284,7 @@ body {
 }
 
 .vinyl-decoration:after {
-  content: '';
+  content: "";
   position: absolute;
   width: 30%;
   height: 30%;
@@ -282,8 +307,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive adjustments */
@@ -297,5 +326,5 @@ body {
 .nsm7Bb-HzV7m-LgbsSe {
   border-radius: 6px !important;
   box-shadow: none !important;
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
 }

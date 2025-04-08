@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 import './UserDashboard.css';
 
 function UserDashboard() {
@@ -10,6 +11,19 @@ function UserDashboard() {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [username, setUsername] = useState('');
+  
+  // Add these states for profile functionality
+  const [profile, setProfile] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    age: '',
+    tel: ''
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,12 +38,17 @@ function UserDashboard() {
         } else {
           setUsername(decoded.username || 'User');
           fetchMockData();
+          
+          // Fetch user profile data when on profile tab
+          if (activeTab === 'profile') {
+            fetchUserProfile(token);
+          }
         }
       } catch (error) {
         navigate('/login');
       }
     }
-  }, [navigate]);
+  }, [navigate, activeTab]);
 
   const fetchMockData = () => {
     // Mock catalog data
@@ -51,6 +70,79 @@ function UserDashboard() {
         { name: 'Highway to Hell', artist: 'Pink Floyd', price: 199.99 }
       ], total: 199.99, status: 'Shipped' },
     ]);
+  };
+
+  // Add function to fetch user profile
+  const fetchUserProfile = async (token) => {
+    setLoading(true);
+    try {
+      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Set profile data, handling null values
+      const profileData = response.data;
+      setProfile({
+        name: profileData.name || '',
+        surname: profileData.surname || '',
+        email: profileData.email || '',
+        age: profileData.age || '',
+        tel: profileData.tel || ''
+      });
+    } catch (err) {
+      console.error('Failed to fetch profile:', err);
+      setError('Failed to load profile. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add function to handle profile form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfile({
+      ...profile,
+      [name]: value
+    });
+  };
+
+  // Add function to handle profile form submit
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      setSuccess('Profile updated successfully!');
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      setError('Failed to update profile. Please try again.');
+    }
+  };
+
+  // Function to cancel profile editing
+  const handleProfileCancel = () => {
+    // Reset to original values by re-fetching
+    const token = localStorage.getItem('token');
+    fetchUserProfile(token);
+    setIsEditing(false);
+    setError('');
+    setSuccess('');
   };
 
   const handleLogout = () => {
@@ -133,7 +225,7 @@ function UserDashboard() {
       <div className="dashboard-content">
         <div className="dashboard-header">
           <h1>Welcome, {username}</h1>
-          <p>Discover new music and expand your collection</p>
+          <p>{activeTab === 'profile' ? 'Manage your profile information' : 'Discover new music and expand your collection'}</p>
         </div>
         
         {activeTab === 'browse' && (
@@ -268,45 +360,142 @@ function UserDashboard() {
           <div className="dashboard-section">
             <h2>Your Profile</h2>
             
-            <div className="profile-card">
-              <div className="profile-header">
-                <div className="profile-avatar">
-                  {username.charAt(0).toUpperCase()}
-                </div>
-                <div className="profile-name">
-                  <h3>{username}</h3>
-                  <p className="profile-role">Music Enthusiast</p>
-                </div>
-              </div>
-              
-              <div className="profile-stats">
-                <div className="stat-item">
-                  <span className="stat-value">{orders.length}</span>
-                  <span className="stat-label">Orders</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">{orders.reduce((sum, order) => sum + order.items.length, 0)}</span>
-                  <span className="stat-label">Items Purchased</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">⭐</span>
-                  <span className="stat-label">Standard Member</span>
-                </div>
-              </div>
-              
-              <div className="profile-section">
-                <h4>Account Settings</h4>
-                <div className="form-group">
-                  <label>Email Notifications</label>
-                  <div className="toggle-switch">
-                    <input type="checkbox" id="notifications" defaultChecked />
-                    <label htmlFor="notifications"></label>
+            <div className="profile-container">
+              <div className="profile-card">
+                <div className="profile-header">
+                  <div className="profile-avatar">
+                    {profile.name ? profile.name.charAt(0).toUpperCase() : username.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="profile-name">
+                    <h3>{profile.name ? `${profile.name} ${profile.surname}` : username}</h3>
+                    <p className="profile-role">Music Enthusiast</p>
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>Change Password</label>
-                  <button className="secondary-button">Update Password</button>
-                </div>
+                
+                {loading ? (
+                  <div className="loading-indicator">Loading your profile information...</div>
+                ) : (
+                  <>
+                    {error && <div className="error-message">{error}</div>}
+                    {success && <div className="success-message">{success}</div>}
+                    
+                    <form onSubmit={handleProfileSubmit} className="profile-form">
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>First Name</label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={profile.name}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            className="music-input"
+                            placeholder="Enter your first name"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Last Name</label>
+                          <input
+                            type="text"
+                            name="surname"
+                            value={profile.surname}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            className="music-input"
+                            placeholder="Enter your last name"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="form-group">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={profile.email}
+                          onChange={handleInputChange}
+                          disabled={!isEditing}
+                          className="music-input"
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                      
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>Age</label>
+                          <input
+                            type="number"
+                            name="age"
+                            value={profile.age}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            className="music-input"
+                            placeholder="Enter your age"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Phone Number</label>
+                          <input
+                            type="tel"
+                            name="tel"
+                            value={profile.tel}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            className="music-input"
+                            placeholder="Enter your phone number"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="profile-actions">
+                        {isEditing ? (
+                          <>
+                            <button type="submit" className="update-button">Save Changes</button>
+                            <button type="button" className="cancel-button" onClick={handleProfileCancel}>
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            type="button" 
+                            className="edit-button" 
+                            onClick={() => setIsEditing(true)}
+                          >
+                            Edit Profile
+                          </button>
+                        )}
+                      </div>
+                    </form>
+                    
+                    <div className="profile-section">
+                      <h4>Account Settings</h4>
+                      <div className="form-group">
+                        <label>Email Notifications</label>
+                        <div className="toggle-switch">
+                          <input type="checkbox" id="notifications" defaultChecked />
+                          <label htmlFor="notifications"></label>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label>Change Password</label>
+                        <button className="secondary-button">Update Password</button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <div className="membership-card">
+                <h3>Membership Status</h3>
+                <div className="membership-badge">Standard</div>
+                <p>Joined: March 2025</p>
+                <ul className="membership-benefits">
+                  <li>Free shipping on orders over $50</li>
+                  <li>Early access to new releases</li>
+                  <li>Exclusive member-only discounts</li>
+                  <li>Personalized recommendations</li>
+                </ul>
+                <button className="upgrade-button">Upgrade to Premium</button>
               </div>
             </div>
           </div>

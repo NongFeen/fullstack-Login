@@ -43,22 +43,55 @@ function Login() {
 
   return (
     <div className="music-auth-container">
-      <h1>Login</h1>
-      <input 
-        type="text" 
-        placeholder="Enter your email" 
-        value={user.username}
-        onChange={(e) => setUser({ ...user, username: e.target.value })}
-      />
-      <input 
-        type="password" 
-        placeholder="Enter your password" 
-        value={user.password}
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-      />
-      <button onClick={handleLogin} disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</button>
-      <div>OR</div>
-      <button onClick={handleGoogleLogin}>Sign in with Google</button>
+      <div className="music-auth-card">
+        <div className="music-auth-header">
+          <h2>Login</h2>
+          <div className="music-divider"></div>
+          <p className="subtitle">Sign in to FeenFeenFeen</p>
+        </div>
+        
+        <div className="form-group">
+          <input 
+            type="text" 
+            placeholder="Enter your email" 
+            value={user.username}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
+            className="music-input"
+          />
+        </div>
+        
+        <div className="form-group">
+          <input 
+            type="password" 
+            placeholder="Enter your password" 
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+            className="music-input"
+          />
+        </div>
+        
+        <button 
+          onClick={handleLogin} 
+          disabled={loading}
+          className="music-button"
+        >
+          {loading ? 'Signing In...' : 'Sign In'}
+        </button>
+        
+        <div className="divider">
+        </div>
+        
+        <button 
+          onClick={handleGoogleLogin}
+          className="music-button google-button"
+        >
+          Sign in with Google
+        </button>
+        
+        <div className="auth-link">
+          Don't have an account? <a href="/register">Register Now</a>
+        </div>
+      </div>
     </div>
   );
 }
