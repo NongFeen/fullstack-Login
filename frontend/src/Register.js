@@ -50,7 +50,7 @@ function Register() {
       console.log("trying to register");
       // await axios.post('/api/register', user);
       const response = await axios.post(
-        'http://localhost:5000/register',
+        'https://feenfeenfeen.online/register',
         user,
         {
           withCredentials: true,

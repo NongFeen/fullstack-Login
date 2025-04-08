@@ -8,7 +8,7 @@ function Dashboard() {
 
   useEffect(() => {
     // Fetch user info from server (based on cookie)
-    axios.get('http://localhost:5000/auth/me', { withCredentials: true })
+    axios.get('https://feenfeenfeen.online/auth/me', { withCredentials: true })
       .then(response => {
         const role = response.data.role;
 
@@ -31,7 +31,7 @@ function Dashboard() {
   }, [navigate]);
 
   const handleLogout = () => {
-    axios.get('http://localhost:5000/logout', { withCredentials: true })
+    axios.get('https://feenfeenfeen.online/logout', { withCredentials: true })
       .then(() => navigate('/login'))
       .catch(() => navigate('/login'));
   };

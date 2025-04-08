@@ -22,7 +22,7 @@ function UserProfile() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/auth/me', {
+        const response = await axios.get('https://feenfeenfeen.online/auth/me', {
           // await axios.get('https://feenfeenfeen.online/api/auth/me', {
           withCredentials: true
         });
@@ -43,7 +43,7 @@ function UserProfile() {
   const fetchUserProfile = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/user/profile', {
+      const response = await axios.get('https://feenfeenfeen.online/user/profile', {
         withCredentials: true,  // Ensures cookies are sent with the request
         headers: {
           'Content-Type': 'application/json', // Set the correct content type
@@ -81,7 +81,7 @@ function UserProfile() {
   
     try {
       const response = await axios.put(
-        'http://localhost:5000/user/profile',
+        'https://feenfeenfeen.online/user/profile',
         profile,
         {
           withCredentials: true, // This sends the cookie along with the request

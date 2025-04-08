@@ -20,7 +20,7 @@ function Login() {
   
   const handleGoogleLogin = () => {
     // window.location.href = 'https://feenfeenfeen.online/api/auth/google';
-    window.location.href = 'http://localhost:5000/auth/google';
+    window.location.href = 'https://feenfeenfeen.online/auth/google';
 
   };
 
@@ -33,7 +33,7 @@ function Login() {
     setLoading(true);
     // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
     try {
-      const { data } = await axios.post('http://localhost:5000/login', 
+      const { data } = await axios.post('https://feenfeenfeen.online/login', 
         user, 
         { 
           withCredentials: true,
