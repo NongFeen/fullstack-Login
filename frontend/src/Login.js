@@ -19,7 +19,9 @@ function Login() {
   }, [navigate]);
   
   const handleGoogleLogin = () => {
-    window.location.href = 'https://feenfeenfeen.online/api/auth/google';
+    // window.location.href = 'https://feenfeenfeen.online/api/auth/google';
+    window.location.href = 'http://localhost:5000/auth/google';
+
   };
 
   const handleLogin = async () => {
@@ -30,7 +32,8 @@ function Login() {
     
     setLoading(true);
     try {
-      const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
+      const { data } = await axios.post('http://localhost:5000/login', user);
+      // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
       localStorage.setItem('token', data.token);
       navigate('/dashboard');
     } catch (error) {

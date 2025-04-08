@@ -14,8 +14,8 @@ function Dashboard() {
       const urlParams = new URLSearchParams(window.location.search);
       const wtoken = urlParams.get('token');
       if (wtoken) {
-        localStorage.setItem('token', wtoken);  // Store the token in localStorage
-        navigate(window.location.pathname);  // Reload to update state and handle navigation
+        // localStorage.setItem('token', wtoken);  // Store the token in localStorage
+        // navigate(window.location.pathname);  // Reload to update state and handle navigation
       }
     } else {
       try {
@@ -24,11 +24,11 @@ function Dashboard() {
 
         // Redirect based on the role using navigate
         if (decoded.role === 'admin') {
-          navigate('/admin-dashboard');
+          // navigate('/admin-dashboard');
         } else if (decoded.role === 'manager') {
-          navigate('/manager-dashboard');
+          // navigate('/manager-dashboard');
         } else if (decoded.role === 'user') {
-          navigate('/user-dashboard');
+          // navigate('/user-dashboard');
         }
       } catch (error) {
         console.error("Invalid token", error);

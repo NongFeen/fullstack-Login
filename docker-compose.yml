@@ -1,65 +1,54 @@
+version: "3.9"
+
 services:
-  # MariaDB service
   db:
-    image: mariadb:10.6  # Use the official MariaDB image
+    image: mariadb:10.6
     container_name: Maria_DB
     environment:
-      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
-      - MYSQL_DATABASE=auth_db
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "true"
+      MYSQL_DATABASE: auth_db
     ports:
-      - "3306:3306"  # Exposing port 3306 for DB
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./database/init-scripts:/docker-entrypoint-initdb.d  # Mount init-scripts folder with SQL file
-    # networks:
-    #   - app_network
+      - ./database/init-scripts:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Backend service (Node.js)
   backend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen:latest
+    build:
+      context: ./backend
     container_name: login_back
     environment:
-      - Google_Auth=${Google_Auth}
-      - JWT_SECRET=${JWT_SECRET}
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_database=${DB_database}
-      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - FRONTEND_URL=${FRONTEND_URL}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      Google_Auth: ${Google_Auth}
+      JWT_SECRET: ${JWT_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_database: ${DB_database}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      APIURL: ${APIURL}
+      WEBURL: ${WEBURL}
     ports:
-      - "5000:5000"  # Exposing port 5000 for API
+      - "5000:5000"
     depends_on:
-       db:
-        condition: service_healthy #make sure db is ready
-    # networks:
-    #   - app_network
-    command: npm start  # Start backend server
+      db:
+        condition: service_healthy
+    command: npm start
 
-  # Frontend service (React)
   frontend:
-    image: registry.nipa.cloud/kmitl-registry/feenfeenfeen-front:latest
+    build:
+      context: ./frontend
     container_name: login_front
     ports:
-      - "3000:3000"  # Exposing port 3000 for React frontend
+      - "3000:3000"
     depends_on:
-      - backend  # Ensure the backend is up before frontend starts
-    # networks:
-    #   - app_network
-    command: npm start  # Start frontend server
-
-#default as bridge mode anyway dont care
-# networks:
-#   app_network:
-#     driver: bridge
+      - backend
+    command: npm start
 
 volumes:
   db_data:
-    driver: local  # Local volume for MariaDB data persistence

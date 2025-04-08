@@ -14,19 +14,19 @@ function AdminDashboard() {
   useEffect(() => {
    const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'admin') {
           localStorage.removeItem('token');
-          navigate('/login');
+          // navigate('/login');
         } else {
           // Fetch mock data for demonstration
           fetchMockData(); 
         }
       } catch (error) {
-        navigate('/login');
+        // navigate('/login');
       }
     }
   }, [navigate]);
@@ -57,7 +57,7 @@ function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    // navigate('/login');
   };
 
   const handleAddProduct = () => {

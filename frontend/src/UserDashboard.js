@@ -28,13 +28,13 @@ function UserDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'user') {
           localStorage.removeItem('token');
-          navigate('/login');
+          // navigate('/login');
         } else {
           setUsername(decoded.username || 'User');
           fetchMockData();
@@ -45,7 +45,7 @@ function UserDashboard() {
           }
         }
       } catch (error) {
-        navigate('/login');
+        // navigate('/login');
       }
     }
   }, [navigate, activeTab]);
@@ -76,7 +76,8 @@ function UserDashboard() {
   const fetchUserProfile = async (token) => {
     setLoading(true);
     try {
-      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
+      const response = await axios.get('http://localhost:5000/user/profile', {
+      // const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -116,12 +117,13 @@ function UserDashboard() {
     
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
       return;
     }
 
     try {
-      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
+      // await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
+      await axios.put('http://localhost:5000/user/profile', profile, {
         headers: {
           Authorization: `Bearer ${token}`
         }

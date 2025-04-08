@@ -7,11 +7,35 @@ const mysql = require('mysql2');
 const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const cookieParser = require('cookie-parser');
 
 const app = express();
+
+// Basic middleware setup
 app.use(express.json());
-app.use(cors());
-app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
+app.use(cookieParser());
+
+// CORS configuration - set up before any routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin',  process.env.WEBURL);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  credentials: true // <-- very important
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// Session and passport setup
+app.use(session({ 
+  secret: process.env.JWT_SECRET || 'your-fallback-secret', 
+  resave: false, 
+  saveUninitialized: true 
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -31,13 +55,19 @@ db.connect(err => {
     console.log("MySQL Connected...");
 });
 
+// Configure cookie options
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    maxAge: 3600000, // 1 hour in milliseconds
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Important for cross-site cookies
+};
+
 passport.use(new GoogleStrategy(
     {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: `${process.env.APIURL}/auth/google/callback`
-        // callbackURL: 'https://feenfeenfeen.online/api/auth/google/callback'`
-
+        callbackURL: `${process.env.APIURL || 'http://localhost:5000'}/auth/google/callback`
     },
     async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
@@ -65,23 +95,34 @@ passport.use(new GoogleStrategy(
                         (err) => {
                             if (err) return done(err);
 
-                            const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                            const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
                             done(null, { user, token });
                         }
                     );
                 });
             } else {
-                const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
                 done(null, { user, token });
             }
         });
     }
 ));
 
+// Passport serialization/deserialization
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+  
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
 app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-    res.redirect(`${process.env.WEBURL}/dashboard?token=${req.user.token}`);
-  });
+    // Set JWT in a cookie instead of passing in URL
+    res.cookie('jwt_token', req.user.token, cookieOptions);
+    res.redirect(`${process.env.WEBURL || 'http://localhost:3000'}/dashboard`);
+});
 
 // Register
 app.post('/register', async (req, res) => {
@@ -115,6 +156,9 @@ app.post('/register', async (req, res) => {
             function(err) {
                 if (err) return res.status(500).send(err);
 
+                // Generate JWT token and set it as a cookie
+                const token = jwt.sign({ id: user_id, role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+                res.cookie('jwt_token', token, cookieOptions);
                 res.json({ message: 'User registered and profile created' });
             }
         );
@@ -131,74 +175,88 @@ app.post('/login', (req, res) => {
         const user = users[0];
         if (!await bcrypt.compare(password, user.password)) 
             return res.status(401).json({ message: 'Invalid credentials' });
-        // Generate JWT token 
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token });
+        
+        // Generate JWT token and set it as a cookie
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+        console.log("jwt_token : "+ token);
+        
+        // Updated cookie options for development environment
+        const cookieOptions = {
+            httpOnly: true,
+            secure: false, // Set to false for http in development
+            maxAge: 3600000, // 1 hour
+            sameSite: 'lax',
+            path: '/' // Ensure cookie is available for the entire site
+        };
+        
+        res.cookie('jwt_token', token, cookieOptions);
+        
+        // Also send token in response body as a backup
+        res.json({ 
+            message: 'Login successful',
+            token: token // Include token in response
+        });
     });
 });
 
-// Protected Route
-app.get('/dashboard', (req, res) => {
-    console.log("requesting to dashboard");
-    const token = req.headers['authorization'];
+// Middleware to verify JWT from cookies
+const verifyToken = (req, res, next) => {
+    const token = req.cookies.jwt_token;
     if (!token) return res.status(403).json({ message: 'No token' });
 
-    jwt.verify(token.split(" ")[1], process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET || 'your-fallback-secret', (err, decoded) => {
         if (err) return res.status(401).json({ message: 'Unauthorized' });
-        res.json({ role: decoded.role });
+        req.user = decoded;
+        next();
     });
+};
+
+// Protected Route
+app.get('/dashboard', verifyToken, (req, res) => {
+    console.log("requesting to dashboard");
+    res.json({ role: req.user.role });
 });
 
-app.get('/user/profile', (req, res) => {
-    const token = req.headers['authorization']; // Get token from the Authorization header
-    if (!token) return res.status(403).json({ error: 'No token provided' });
-  
-    // Verify the token
-    jwt.verify(token.split(" ")[1], process.env.JWT_SECRET, (err, decoded) => {
-      if (err) return res.status(401).json({ error: 'Unauthorized' });
-  
-      const { username } = decoded; // Extract the username (email) from the decoded token
-  
-      db.query(
+app.get('/user/profile', verifyToken, (req, res) => {
+    const { username } = req.user;
+
+    db.query(
         'SELECT * FROM user_profiles WHERE email = ?',
         [username],
         (err, results) => {
-          if (err) return res.status(500).json({ error: 'Database error' });
-          if (results.length === 0) return res.status(404).json({ error: 'Profile not found' });
-          res.json(results[0]); // Return the user profile
+            if (err) return res.status(500).json({ error: 'Database error' });
+            if (results.length === 0) return res.status(404).json({ error: 'Profile not found' });
+            res.json(results[0]); // Return the user profile
         }
-      );
-    });
-  });
-  
-  // Update user profile
-  app.put('/user/profile', (req, res) => {
-    const token = req.headers['authorization']; // Get token from the Authorization header
-    if (!token) return res.status(403).json({ error: 'No token provided' });
-  
-    // Verify the token
-    jwt.verify(token.split(" ")[1], process.env.JWT_SECRET, (err, decoded) => {
-      if (err) return res.status(401).json({ error: 'Unauthorized' });
-  
-      const { username } = decoded; // Extract the username (email) from the decoded token
-      const { name, surname, email, age, tel } = req.body;
-  
-      // Check if the logged-in user is updating their own profile or if they are an admin
-      if (username !== email && decoded.role !== 'admin') {
+    );
+});
+
+// Update user profile
+app.put('/user/profile', verifyToken, (req, res) => {
+    const { username, role } = req.user;
+    const { name, surname, email, age, tel } = req.body;
+
+    // Check if the logged-in user is updating their own profile or if they are an admin
+    if (username !== email && role !== 'admin') {
         return res.status(403).json({ error: 'You are not authorized to change this profile' });
-      }
-  
-      // Update the user profile in the database
-      db.query(
+    }
+
+    // Update the user profile in the database
+    db.query(
         'UPDATE user_profiles SET name = ?, surname = ?, email = ?, age = ?, tel = ? WHERE email = ?',
         [name, surname, email, age, tel, username],
         (err, results) => {
-          if (err) return res.status(500).json({ error: 'Database error' });
-          if (results.affectedRows === 0) return res.status(404).json({ error: 'Profile not found' });
-          res.json({ message: 'Profile updated successfully' });
+            if (err) return res.status(500).json({ error: 'Database error' });
+            if (results.affectedRows === 0) return res.status(404).json({ error: 'Profile not found' });
+            res.json({ message: 'Profile updated successfully' });
         }
-      );
-    });
-  });
-  
-app.listen(5000, () => console.log("Server running on port 5000 \n AUTH : ") + process.env.Google_Auth);
+    );
+});
+
+// Logout route
+app.get('/logout', (req, res) => {
+    res.clearCookie('jwt_token');
+    res.json({ message: 'Logged out successfully' });
+});
+
+app.listen(5000, () => console.log("Server running on port 5000"));

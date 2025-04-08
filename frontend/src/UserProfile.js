@@ -22,7 +22,7 @@ function UserProfile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
       return;
     }
 
@@ -33,14 +33,15 @@ function UserProfile() {
     } catch (error) {
       console.error('Token error:', error);
       localStorage.removeItem('token');
-      navigate('/login');
+      // navigate('/login');
     }
   }, [navigate]);
 
   const fetchUserProfile = async (token) => {
     setLoading(true);
     try {
-      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
+      const response = await axios.get('http://localhost:5000/user/profile', {
+      // const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -78,12 +79,13 @@ function UserProfile() {
     
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
       return;
     }
 
     try {
-      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
+      await axios.put('http://localhost:5000/user/profile', profile, {
+      // await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
         headers: {
           Authorization: `Bearer ${token}`
         }

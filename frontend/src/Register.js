@@ -48,7 +48,16 @@ function Register() {
     setLoading(true);
     try {
       console.log("trying to register");
-      await axios.post('/api/register', user);
+      // await axios.post('/api/register', user);
+      await axios.post('http://localhost:5000/register', 
+        user, 
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       alert("Registration successful! Please login.");
       window.location.href = '/login';
     } catch (error) {
