@@ -258,33 +258,33 @@ app.get('/dashboard', verifyToken, (req, res) => {
 });
 
 app.get('/user/profile', verifyToken, (req, res) => {
-    const { username } = req.user;
-
+    const { id } = req.user;  // Extracting `id` from the JWT payload
+  
     db.query(
-        'SELECT * FROM user_profiles WHERE email = ?',
-        [username],
-        (err, results) => {
-            if (err) return res.status(500).json({ error: 'Database error' });
-            if (results.length === 0) return res.status(404).json({ error: 'Profile not found' });
-            res.json(results[0]); // Return the user profile
-        }
+      'SELECT * FROM user_profiles WHERE user_id = ?',
+      [id],  // Use `id` from the JWT payload
+      (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (results.length === 0) return res.status(404).json({ error: 'Profile not found' });
+        res.json(results[0]); // Return the user profile
+      }
     );
-});
+  });
 
 // Update user profile
 app.put('/user/profile', verifyToken, (req, res) => {
-    const { username, role } = req.user;
+    const { id, role } = req.user;  // Get user ID from the JWT
     const { name, surname, email, age, tel } = req.body;
 
     // Check if the logged-in user is updating their own profile or if they are an admin
-    if (username !== email && role !== 'admin') {
+    if (id !== req.user.id && role !== 'admin') {
         return res.status(403).json({ error: 'You are not authorized to change this profile' });
     }
 
     // Update the user profile in the database
     db.query(
-        'UPDATE user_profiles SET name = ?, surname = ?, email = ?, age = ?, tel = ? WHERE email = ?',
-        [name, surname, email, age, tel, username],
+        'UPDATE user_profiles SET name = ?, surname = ?, email = ?, age = ?, tel = ? WHERE user_id = ?',
+        [name, surname, email, age, tel, id], // Use user_id from JWT instead of email
         (err, results) => {
             if (err) return res.status(500).json({ error: 'Database error' });
             if (results.affectedRows === 0) return res.status(404).json({ error: 'Profile not found' });
