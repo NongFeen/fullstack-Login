@@ -489,7 +489,7 @@
 }
 
 .profile-card {
-  background-color: var(--surface-light);
+  background-color: var(--surface);
   border-radius: 8px;
   padding: 20px;
 }
@@ -634,7 +634,7 @@
 }
 
 .profile-card {
-  background-color: white;
+  background-color: var(--surface);
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);

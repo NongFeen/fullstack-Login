@@ -26,28 +26,29 @@ function UserDashboard() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    } else {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.role !== 'user') {
-          localStorage.removeItem('token');
-          navigate('/login');
-        } else {
-          setUsername(decoded.username || 'User');
-          fetchMockData();
+    // const token = localStorage.getItem('token');
+    // if (!token) {
+    //   navigate('/login');
+    // } else {
+    //   try {
+    //     const decoded = jwtDecode(token);
+    //     if (decoded.role !== 'user') {
+    //       localStorage.removeItem('token');
+    //       navigate('/login');
+    //     } else {
+    //       setUsername(decoded.username || 'User');
+    //       fetchMockData();
           
-          // Fetch user profile data when on profile tab
-          if (activeTab === 'profile') {
-            fetchUserProfile(token);
-          }
-        }
-      } catch (error) {
-        navigate('/login');
-      }
-    }
+    //       // Fetch user profile data when on profile tab
+    //       if (activeTab === 'profile') {
+    //         fetchUserProfile(token);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     navigate('/login');
+    //   }
+    // }
+    fetchMockData();
   }, [navigate, activeTab]);
 
   const fetchMockData = () => {
