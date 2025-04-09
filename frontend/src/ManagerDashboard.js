@@ -13,18 +13,18 @@ function ManagerDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      // navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);
         if (decoded.role !== 'manager') {
           localStorage.removeItem('token');
-          navigate('/login');
+          // navigate('/login');
         } else {
           fetchMockData();
         }
       } catch (error) {
-        navigate('/login');
+        // navigate('/login');
       }
     }
   }, [navigate]);
@@ -56,7 +56,7 @@ function ManagerDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    // navigate('/login');
   };
 
   const handleUpdateStock = (id, newStock) => {

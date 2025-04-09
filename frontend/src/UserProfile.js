@@ -13,39 +13,42 @@ function UserProfile() {
     age: '',
     tel: ''
   });
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('https://feenfeenfeen.online/api/auth/me', {
+          // await axios.get('https://feenfeenfeen.online/api/auth/me', {
+          withCredentials: true
+        });
+  
+        const { username } = response.data;
+        setUsername(username || 'User');
+        fetchUserProfile(); // fetch without token
+      } catch (error) {
+        console.error('Token or session error:', error);
+        // localStorage.removeItem('token'); // no need if you're not using localStorage anymore
+        // navigate('/login');
+      }
+    };
+  
+    fetchUserInfo();
+  },);
 
-    try {
-      const decoded = jwtDecode(token);
-      setUsername(decoded.username || 'User');
-      fetchUserProfile(token);
-    } catch (error) {
-      console.error('Token error:', error);
-      localStorage.removeItem('token');
-      navigate('/login');
-    }
-  }, [navigate]);
-
-  const fetchUserProfile = async (token) => {
+  const fetchUserProfile = async () => {
     setLoading(true);
     try {
       const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
+        withCredentials: true,  // Ensures cookies are sent with the request
         headers: {
-          Authorization: `Bearer ${token}`
+          'Content-Type': 'application/json', // Set the correct content type
         }
       });
-      
       // Set profile data, handling null values
       const profileData = response.data;
       setProfile({
@@ -75,33 +78,39 @@ function UserProfile() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
+  
     try {
-      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.put(
+        'https://feenfeenfeen.online/api/user/profile',
+        profile,
+        {
+          withCredentials: true, // This sends the cookie along with the request
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
-      
-      setSuccess('Profile updated successfully!');
-      setIsEditing(false);
+      );
+  
+      if (response.status === 200) {
+        setSuccess('Profile updated successfully!');
+        // setIsEditing(false);
+      }
     } catch (err) {
       console.error('Failed to update profile:', err);
-      setError('Failed to update profile. Please try again.');
+  
+      if (err.response) {
+        setError(err.response.data?.message || 'Server error. Please try again.');
+      } else if (err.request) {
+        setError('No response from server. Check your network.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 
   const handleCancel = () => {
-    // Reset to original values by re-fetching
-    const token = localStorage.getItem('token');
-    fetchUserProfile(token);
-    setIsEditing(false);
+    fetchUserProfile(); // Refetch profile using cookie-auth
+    // setIsEditing(false);
     setError('');
     setSuccess('');
   };
@@ -236,15 +245,13 @@ function UserProfile() {
                     {isEditing ? (
                       <>
                         <button type="submit" className="update-button">Save Changes</button>
-                        <button type="button" className="cancel-button" onClick={handleCancel}>
-                          Cancel
-                        </button>
+                        <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
                       </>
                     ) : (
                       <button 
                         type="button" 
                         className="edit-button" 
-                        onClick={() => setIsEditing(true)}
+                        // onClick={() => setIsEditing(true)}
                       >
                         Edit Profile
                       </button>

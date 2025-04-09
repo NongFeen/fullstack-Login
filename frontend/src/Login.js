@@ -10,16 +10,18 @@ function Login() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    if (token) {
-      localStorage.setItem('token', token);
-      navigate('/dashboard');
-    }
+    // const urlParams = new URLSearchParams(window.location.search);
+    // const token = urlParams.get('token');
+    // if (token) {
+    //   localStorage.setItem('token', token);
+    //   navigate('/dashboard');
+    // }
   }, [navigate]);
   
   const handleGoogleLogin = () => {
     window.location.href = 'https://feenfeenfeen.online/api/auth/google';
+    // window.location.href = 'https://feenfeenfeen.online/auth/google';
+
   };
 
   const handleLogin = async () => {
@@ -29,9 +31,18 @@ function Login() {
     }
     
     setLoading(true);
+    // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
     try {
-      const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
-      localStorage.setItem('token', data.token);
+      const { data } = await axios.post('https://feenfeenfeen.online/api/login', 
+        user, 
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      // localStorage.setItem('token', data.token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);

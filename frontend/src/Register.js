@@ -48,12 +48,23 @@ function Register() {
     setLoading(true);
     try {
       console.log("trying to register");
-      await axios.post('/api/register', user);
-      alert("Registration successful! Please login.");
+      // await axios.post('/api/register', user);
+      const response = await axios.post('https://feenfeenfeen.online/api/register', user, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      alert(response.data.message || "Registration successful! Please login.");
       window.location.href = '/login';
     } catch (error) {
       console.error('Registration error:', error);
-      alert("Registration failed. Try again.");
+      
+      // Try to show message from backend, else default error
+      const message =
+        error.response?.data?.message || 'Registration failed. Try again.';
+      alert(message);
     } finally {
       setLoading(false);
     }
