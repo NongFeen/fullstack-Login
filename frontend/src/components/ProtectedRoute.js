@@ -7,7 +7,7 @@ function ProtectedRoute({ allowedRoles, children }) {
 
   useEffect(() => {
     axios
-      .get("https://feenfeenfeen.online/auth/me", {
+      .get("https://feenfeenfeen.online/api/auth/me", {
         withCredentials: true,
       })
       .then((res) => {

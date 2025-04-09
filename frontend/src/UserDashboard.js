@@ -27,7 +27,7 @@ function UserDashboard() {
 
   useEffect(() => {
 
-    axios.get('https://feenfeenfeen.online/auth/me', { withCredentials: true })
+    axios.get('https://feenfeenfeen.online/api/auth/me', { withCredentials: true })
       .then(response => {
         const username = response.data.username;
         setUsername(username || 'User')
@@ -76,7 +76,7 @@ function UserDashboard() {
   const fetchUserProfile = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://feenfeenfeen.online/user/profile', {
+      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
         withCredentials: true,  // Ensures cookies are sent with the request
         headers: {
           'Content-Type': 'application/json', // Set the correct content type
@@ -117,7 +117,7 @@ function UserDashboard() {
   
     try {
       const response = await axios.put(
-        'https://feenfeenfeen.online/user/profile',
+        'https://feenfeenfeen.online/api/user/profile',
         profile,
         {
           withCredentials: true, // This sends the cookie along with the request
@@ -156,7 +156,7 @@ function UserDashboard() {
   };
 
   const handleLogout = () => {
-    axios.get('https://feenfeenfeen.online/logout', { withCredentials: true })
+    axios.get('https://feenfeenfeen.online/api/logout', { withCredentials: true })
       .then(() => navigate('/login'))
       .catch(() => navigate('/login'));
   };

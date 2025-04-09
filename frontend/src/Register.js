@@ -49,16 +49,12 @@ function Register() {
     try {
       console.log("trying to register");
       // await axios.post('/api/register', user);
-      const response = await axios.post(
-        'https://feenfeenfeen.online/register',
-        user,
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await axios.post('https://feenfeenfeen.online/api/register', user, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
   
       alert(response.data.message || "Registration successful! Please login.");
       window.location.href = '/login';

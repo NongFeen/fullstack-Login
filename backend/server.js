@@ -123,7 +123,7 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'prof
 app.get('/auth/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
     // Set JWT in a cookie instead of passing in URL
     res.cookie('jwt_token', req.user.token, cookieOptions);
-    res.redirect(`${process.env.WEBURL || 'http://localhost:3000'}/dashboard`);
+    res.redirect(`${process.env.WEBURL}/dashboard`);
 });
 
 const validatePassword = (password) => {
