@@ -1,4 +1,3 @@
-/* UserDashboard.css */
 :root {
   --primary-color: #6200ea;
   --primary-dark: #3700b3;
@@ -13,6 +12,9 @@
   --on-primary: #ffffff;
   --on-secondary: #000000;
   --border-color: #383838;
+  --gradient-primary: linear-gradient(45deg, #6a11cb, #2575fc);
+  --gradient-secondary: linear-gradient(45deg, #f5af19, #f12711);
+  --gradient-dark: linear-gradient(45deg, #2b2b2b, #3a3a3a);
 }
 
 .music-dashboard {
@@ -455,10 +457,6 @@
   margin-right: 20px;
 }
 
-.item-price {
-  color: var(--primary-light);
-}
-
 .order-footer {
   display: flex;
   justify-content: space-between;
@@ -488,40 +486,50 @@
   background-color: var(--primary-dark);
 }
 
+/* Profile Section */
+.profile-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
 .profile-card {
   background-color: var(--surface);
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .profile-header {
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .profile-avatar {
   width: 70px;
   height: 70px;
+  background: var(--gradient-primary);
   border-radius: 50%;
-  background-color: var(--primary-color);
-  color: var(--on-primary);
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--on-primary);
+  font-weight: bold;
   margin-right: 20px;
 }
 
 .profile-name h3 {
-  font-size: 1.4rem;
-  margin-bottom: 5px;
+  margin: 0;
+  font-size: 20px;
   color: var(--on-background);
 }
 
 .profile-role {
+  margin: 5px 0 0;
   color: var(--primary-light);
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .profile-stats {
@@ -549,126 +557,15 @@
 }
 
 .profile-section {
-  border-top: 1px solid var(--border-color);
+  margin-top: 30px;
   padding-top: 20px;
+  border-top: 1px solid var(--border-color);
 }
 
 .profile-section h4 {
   margin-bottom: 15px;
+  font-weight: 600;
   color: var(--on-background);
-}
-
-.form-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-switch label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--surface);
-  border-radius: 24px;
-  cursor: pointer;
-  transition: background-color 0.4s;
-}
-
-.toggle-switch label:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 4px;
-  background-color: var(--on-surface);
-  border-radius: 50%;
-  transition: transform 0.4s;
-}
-
-.toggle-switch input:checked + label {
-  background-color: var(--primary-color);
-}
-
-.toggle-switch input:checked + label:before {
-  transform: translateX(26px);
-  background-color: var(--on-primary);
-}
-
-.secondary-button {
-  background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.secondary-button:hover {
-  background-color: var(--primary-color);
-  color: var(--on-primary);
-}
-
-.profile-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-}
-
-.profile-card {
-  background-color: var(--surface);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.profile-avatar {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-  margin-right: 16px;
-}
-
-.profile-name h3 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.profile-role {
-  margin: 5px 0 0;
-  color: #666;
-  font-size: 14px;
 }
 
 .profile-form {
@@ -688,34 +585,37 @@
 
 .form-group {
   margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  color: var(--on-background);
 }
 
 .music-input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--surface-light);
+  color: var(--on-background);
   font-size: 16px;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .music-input:focus {
-  border-color: #6a11cb;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.1);
   outline: none;
 }
 
 .music-input:disabled {
-  background-color: #f0f0f0;
+  background-color: var(--surface);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -726,6 +626,7 @@
   margin-top: 20px;
 }
 
+/* Button Styles */
 .edit-button, .update-button, .cancel-button, .secondary-button, .upgrade-button {
   padding: 12px 24px;
   border-radius: 30px;
@@ -736,8 +637,8 @@
 }
 
 .edit-button, .update-button {
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--on-primary);
 }
 
 .edit-button:hover, .update-button:hover {
@@ -746,36 +647,30 @@
 }
 
 .cancel-button {
-  background-color: #f0f0f0;
-  color: #555;
+  background-color: var(--surface-light);
+  color: var(--on-surface);
 }
 
 .cancel-button:hover {
-  background-color: #ddd;
+  background-color: var(--surface);
 }
 
 .secondary-button {
   background-color: transparent;
-  border: 2px solid #6a11cb;
-  color: #6a11cb;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
 }
 
 .secondary-button:hover {
-  background-color: rgba(106, 17, 203, 0.05);
+  background-color: var(--primary-color);
+  color: var(--on-primary);
 }
 
-.profile-section {
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.profile-section h4 {
-  margin-bottom: 15px;
-  font-weight: 600;
-  color: #333;
-}
-
+/* Toggle Switch */
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -796,7 +691,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--surface);
   transition: .4s;
   border-radius: 34px;
 }
@@ -808,19 +703,21 @@
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--on-surface);
   transition: .4s;
   border-radius: 50%;
 }
 
 .toggle-switch input:checked + label {
-  background-color: #6a11cb;
+  background-color: var(--primary-color);
 }
 
 .toggle-switch input:checked + label:before {
   transform: translateX(26px);
+  background-color: var(--on-primary);
 }
 
+/* Notification Messages */
 .error-message, .success-message, .loading-indicator {
   padding: 12px 15px;
   border-radius: 6px;
@@ -846,11 +743,12 @@
   text-align: center;
 }
 
+/* Membership */
 .membership-card {
-  background: linear-gradient(45deg, #2b2b2b, #3a3a3a);
+  background: var(--gradient-dark);
   border-radius: 12px;
   padding: 25px;
-  color: white;
+  color: var(--on-background);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   height: fit-content;
 }
@@ -863,7 +761,7 @@
 
 .membership-badge {
   display: inline-block;
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  background: var(--gradient-primary);
   padding: 8px 15px;
   border-radius: 20px;
   font-weight: 600;
@@ -890,13 +788,13 @@
 .membership-benefits li:before {
   content: "♪";
   margin-right: 10px;
-  color: #6a11cb;
+  color: var(--primary-light);
   font-weight: bold;
 }
 
 .upgrade-button {
   width: 100%;
-  background: linear-gradient(45deg, #f5af19, #f12711);
+  background: var(--gradient-secondary);
   margin-top: 15px;
 }
 
