@@ -1,63 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
-import './UserDashboard.css'; // Using same CSS file
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import "./UserDashboard.css"; // Using same CSS file
 
 function UserProfile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    name: '',
-    surname: '',
-    email: '',
-    age: '',
-    tel: ''
+    name: "",
+    surname: "",
+    email: "",
+    age: "",
+    tel: "",
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
       const decoded = jwtDecode(token);
-      setUsername(decoded.username || 'User');
+      setUsername(decoded.username || "User");
       fetchUserProfile(token);
     } catch (error) {
-      console.error('Token error:', error);
-      localStorage.removeItem('token');
-      navigate('/login');
+      console.error("Token error:", error);
+      localStorage.removeItem("token");
+      navigate("/login");
     }
   }, [navigate]);
 
   const fetchUserProfile = async (token) => {
     setLoading(true);
     try {
-      const response = await axios.get('https://feenfeenfeen.online/api/user/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.get(
+        "https://feenfeenfeen.online/api/user/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
-      
+      );
+
       // Set profile data, handling null values
       const profileData = response.data;
       setProfile({
-        name: profileData.name || '',
-        surname: profileData.surname || '',
-        email: profileData.email || '',
-        age: profileData.age || '',
-        tel: profileData.tel || ''
+        name: profileData.name || "",
+        surname: profileData.surname || "",
+        email: profileData.email || "",
+        age: profileData.age || "",
+        tel: profileData.tel || "",
       });
     } catch (err) {
-      console.error('Failed to fetch profile:', err);
-      setError('Failed to load profile. Please try again later.');
+      console.error("Failed to fetch profile:", err);
+      setError("Failed to load profile. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -67,48 +70,48 @@ function UserProfile() {
     const { name, value } = e.target;
     setProfile({
       ...profile,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    
-    const token = localStorage.getItem('token');
+    setError("");
+    setSuccess("");
+
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
-      await axios.put('https://feenfeenfeen.online/api/user/profile', profile, {
+      await axios.put("https://feenfeenfeen.online/api/user/profile", profile, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
-      setSuccess('Profile updated successfully!');
+
+      setSuccess("Profile updated successfully!");
       setIsEditing(false);
     } catch (err) {
-      console.error('Failed to update profile:', err);
-      setError('Failed to update profile. Please try again.');
+      console.error("Failed to update profile:", err);
+      setError("Failed to update profile. Please try again.");
     }
   };
 
   const handleCancel = () => {
     // Reset to original values by re-fetching
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     fetchUserProfile(token);
     setIsEditing(false);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
@@ -118,41 +121,54 @@ function UserProfile() {
           <h2>FeenFeenFeen</h2>
           <div className="user-badge">MY MUSIC</div>
         </div>
-        
+
         <div className="dashboard-nav">
-          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/user-dashboard")}
+          >
             Browse Music
           </button>
-          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/user-dashboard")}
+          >
             Cart
           </button>
-          <button className="nav-item" onClick={() => navigate('/user-dashboard')}>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/user-dashboard")}
+          >
             My Orders
           </button>
-          <button className="nav-item active">
-            Profile
-          </button>
+          <button className="nav-item active">Profile</button>
         </div>
-        
+
         <button className="logout-button" onClick={handleLogout}>
           Logout
         </button>
       </div>
-      
+
       <div className="dashboard-content">
         <div className="dashboard-header">
           <h1>Your Profile</h1>
           <p>Update your personal information</p>
         </div>
-        
+
         <div className="dashboard-section">
           <div className="profile-card">
             <div className="profile-header">
               <div className="profile-avatar">
-                {profile.name ? profile.name.charAt(0).toUpperCase() : username.charAt(0).toUpperCase()}
+                {profile.name
+                  ? profile.name.charAt(0).toUpperCase()
+                  : username.charAt(0).toUpperCase()}
               </div>
               <div className="profile-name">
-                <h3>{profile.name ? `${profile.name} ${profile.surname}` : username}</h3>
+                <h3>
+                  {profile.name
+                    ? `${profile.name} ${profile.surname}`
+                    : username}
+                </h3>
                 <p className="profile-role">Music Enthusiast</p>
               </div>
             </div>
@@ -163,12 +179,13 @@ function UserProfile() {
               <>
                 {error && <div className="error-message">{error}</div>}
                 {success && <div className="success-message">{success}</div>}
-                
+
                 <form onSubmit={handleSubmit} className="profile-form">
                   <div className="form-row">
                     <div className="form-group">
-                      <label>First Name</label>
+                      <label htmlFor="profile-firstName">First Name</label>
                       <input
+                        id="profile-firstName"
                         type="text"
                         name="name"
                         value={profile.name}
@@ -179,8 +196,9 @@ function UserProfile() {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Last Name</label>
+                      <label htmlFor="profile-lastName">Last Name</label>
                       <input
+                        id="profile-lastName"
                         type="text"
                         name="surname"
                         value={profile.surname}
@@ -191,10 +209,11 @@ function UserProfile() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="form-group">
-                    <label>Email</label>
+                    <label htmlFor="profile-email">Email</label>
                     <input
+                      id="profile-email"
                       type="email"
                       name="email"
                       value={profile.email}
@@ -204,11 +223,12 @@ function UserProfile() {
                       placeholder="Enter your email"
                     />
                   </div>
-                  
+
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Age</label>
+                      <label htmlFor="profile-age">Age</label>
                       <input
+                        id="profile-age"
                         type="number"
                         name="age"
                         value={profile.age}
@@ -219,8 +239,9 @@ function UserProfile() {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Phone Number</label>
+                      <label htmlFor="profile-phone">Phone Number</label>
                       <input
+                        id="profile-phone"
                         type="tel"
                         name="tel"
                         value={profile.tel}
@@ -231,19 +252,25 @@ function UserProfile() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="profile-actions">
                     {isEditing ? (
                       <>
-                        <button type="submit" className="update-button">Save Changes</button>
-                        <button type="button" className="cancel-button" onClick={handleCancel}>
+                        <button type="submit" className="update-button">
+                          Save Changes
+                        </button>
+                        <button
+                          type="button"
+                          className="cancel-button"
+                          onClick={handleCancel}
+                        >
                           Cancel
                         </button>
                       </>
                     ) : (
-                      <button 
-                        type="button" 
-                        className="edit-button" 
+                      <button
+                        type="button"
+                        className="edit-button"
                         onClick={() => setIsEditing(true)}
                       >
                         Edit Profile
@@ -251,25 +278,45 @@ function UserProfile() {
                     )}
                   </div>
                 </form>
-                
+
                 <div className="profile-section">
                   <h4>Account Settings</h4>
                   <div className="form-group">
-                    <label>Email Notifications</label>
+                    <label htmlFor="email-notifications">
+                      Email Notifications
+                    </label>
                     <div className="toggle-switch">
-                      <input type="checkbox" id="notifications" defaultChecked />
-                      <label htmlFor="notifications"></label>
+                      <input
+                        type="checkbox"
+                        id="email-notifications"
+                        defaultChecked
+                      />
+                      <label htmlFor="email-notifications"></label>
                     </div>
                   </div>
                   <div className="form-group">
-                    <label>Change Password</label>
-                    <button className="secondary-button">Update Password</button>
+                    <label htmlFor="email-notifications">
+                      Email Notifications
+                    </label>
+                    <div className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        id="email-notifications"
+                        defaultChecked
+                      />
+                      <label
+                        htmlFor="email-notifications"
+                        className="visually-hidden"
+                      >
+                        Toggle email notifications
+                      </label>
+                    </div>
                   </div>
                 </div>
               </>
             )}
           </div>
-          
+
           <div className="membership-card">
             <h3>Membership Status</h3>
             <div className="membership-badge">Standard</div>
