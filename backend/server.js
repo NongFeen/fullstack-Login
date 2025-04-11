@@ -314,7 +314,14 @@ app.get('/redirect-dashboard', verifyToken, (req, res) => {
   });
 
 app.get('/auth/me', verifyToken, (req, res) => {
-    const { role, id, username } = req.user;
-    res.json({ role, id, username });
+    console.log("retive you own data");
+    try {
+        const { role, id, username } = req.user;
+        res.json({ role, id, username });
+        
+    } catch (error) {
+        console.log("retive you own data");C
+        
+    }
 });
 app.listen(5000, () => console.log("Server running on port 5000"));

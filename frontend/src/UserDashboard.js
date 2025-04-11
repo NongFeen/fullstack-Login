@@ -129,10 +129,20 @@ function UserDashboard() {
       },
     ]);
   };
+  axios.get('http://localhost:5000/auth/me', { withCredentials: true })
+      .then(response => {
+        const username = response.data.username;
+        setUsername(username || 'User')
+        // Redirect based on role
+      })
+      .catch(error => {
+        console.error("User not authenticated", error);
+        navigate('/login');
+      })
 
   // Add function to fetch user profile
   const fetchUserProfile = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await axios.get('http://localhost:5000/user/profile', {
         withCredentials: true,  // Ensures cookies are sent with the request
@@ -207,7 +217,7 @@ function UserDashboard() {
   const handleProfileCancel = () => {
     // Reset to original values by re-fetching
     const token = localStorage.getItem("token");
-    fetchUserProfile(token);
+    fetchUserProfile();
     // setIsEditing(false);
     setError('');
     setSuccess('');
