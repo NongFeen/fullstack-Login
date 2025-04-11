@@ -320,7 +320,7 @@ app.get('/auth/me', verifyToken, (req, res) => {
         res.json({ role, id, username });
         
     } catch (error) {
-        console.log("retive you own data");C
+        console.log("retive you own data");
         
     }
 });

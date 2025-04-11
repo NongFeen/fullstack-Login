@@ -216,7 +216,6 @@ function UserDashboard() {
   // Function to cancel profile editing
   const handleProfileCancel = () => {
     // Reset to original values by re-fetching
-    const token = localStorage.getItem("token");
     fetchUserProfile();
     // setIsEditing(false);
     setError('');

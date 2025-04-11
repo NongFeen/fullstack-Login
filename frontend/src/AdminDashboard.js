@@ -19,23 +19,7 @@ function AdminDashboard() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // navigate('/login');
-    } else {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.role !== 'admin') {
-          localStorage.removeItem('token');
-          // navigate('/login');
-        } else {
-          // Fetch mock data for demonstration
-          fetchMockData();
-        }
-      } catch (error) {
-        // navigate('/login');
-      }
-    }
+      fetchMockData();
   }, [navigate]);
 
   const fetchMockData = () => {

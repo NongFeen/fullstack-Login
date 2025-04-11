@@ -11,9 +11,7 @@ function ManagerDashboard() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) {
-      // navigate('/login');
     } else {
       try {
         const decoded = jwtDecode(token);

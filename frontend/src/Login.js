@@ -19,7 +19,6 @@ function Login() {
   }, [navigate]);
   
   const handleGoogleLogin = () => {
-    // window.location.href = 'https://feenfeenfeen.online/api/auth/google';
     window.location.href = 'http://localhost:5000/auth/google';
 
   };
@@ -31,7 +30,6 @@ function Login() {
     }
     
     setLoading(true);
-    // const { data } = await axios.post('https://feenfeenfeen.online/api/login', user);
     try {
       const { data } = await axios.post('http://localhost:5000/login', 
         user, 
