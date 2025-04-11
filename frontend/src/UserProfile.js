@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "./UserDashboard.css"; // Using same CSS file
 
@@ -32,8 +31,7 @@ function UserProfile() {
         fetchUserProfile(); // fetch without token
       } catch (error) {
         console.error('Token or session error:', error);
-        // localStorage.removeItem('token'); // no need if you're not using localStorage anymore
-        // navigate('/login');
+        navigate('/login');
       }
     };
   
@@ -93,7 +91,6 @@ function UserProfile() {
   
       if (response.status === 200) {
         setSuccess('Profile updated successfully!');
-        // setIsEditing(false);
       }
     } catch (err) {
       console.error('Failed to update profile:', err);
@@ -110,7 +107,6 @@ function UserProfile() {
 
   const handleCancel = () => {
     fetchUserProfile(); // Refetch profile using cookie-auth
-    // setIsEditing(false);
     setError('');
     setSuccess('');
   };
@@ -297,7 +293,7 @@ function UserProfile() {
                         id="email-notifications"
                         defaultChecked
                       />
-                      <label htmlFor="email-notifications"></label>
+                      <label htmlFor="email-notifications" aria-label="Receive email notifications"></label>
                     </div>
                   </div>
                   <div className="form-group">

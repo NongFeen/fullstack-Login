@@ -10,12 +10,6 @@ function Login() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const token = urlParams.get('token');
-    // if (token) {
-    //   localStorage.setItem('token', token);
-    //   navigate('/dashboard');
-    // }
   }, [navigate]);
   
   const handleGoogleLogin = () => {
@@ -31,7 +25,7 @@ function Login() {
     
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/login', 
+      await axios.post('http://localhost:5000/login', 
         user, 
         { 
           withCredentials: true,
@@ -40,7 +34,6 @@ function Login() {
           }
         }
       );
-      // localStorage.setItem('token', data.token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);

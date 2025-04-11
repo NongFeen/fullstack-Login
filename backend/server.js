@@ -196,9 +196,6 @@ app.post('/register', async (req, res) => {
                 function(err) {
                     if (err) return res.status(500).send(err);
 
-                    // Generate JWT token and set it as a cookie
-                    const token = jwt.sign({ id: user_id, role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
-                    // res.cookie('jwt_token', token, cookieOptions);
                     res.json({ message: 'User registered and profile created' });
                 }
             );

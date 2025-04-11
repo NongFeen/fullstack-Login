@@ -57,7 +57,6 @@ function Register() {
     setLoading(true);
     try {
       console.log("trying to register");
-      // await axios.post('/api/register', user);
       const response = await axios.post(
         'http://localhost:5000/register',
         user,

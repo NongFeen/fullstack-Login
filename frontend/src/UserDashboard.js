@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "./UserDashboard.css";
 
@@ -45,7 +44,6 @@ function UserDashboard() {
         }
       }
     catch (error) {
-      // navigate('/login');
     }
     fetchMockData();
   }, [navigate, activeTab]);
@@ -197,7 +195,6 @@ function UserDashboard() {
   
       if (response.status === 200) {
         setSuccess('Profile updated successfully!');
-        // setIsEditing(false);
       }
     } catch (err) {
       console.error('Failed to update profile:', err);
@@ -217,7 +214,6 @@ function UserDashboard() {
   const handleProfileCancel = () => {
     // Reset to original values by re-fetching
     fetchUserProfile();
-    // setIsEditing(false);
     setError('');
     setSuccess('');
   };
@@ -351,9 +347,9 @@ function UserDashboard() {
 
             {cart.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">🛒</div>
+                <div className="empty-icon">&#128722;</div>
                 <p>Your cart is empty</p>
-                <button
+                <button 
                   className="browse-button"
                   onClick={() => setActiveTab("browse")}
                 >
@@ -409,7 +405,7 @@ function UserDashboard() {
 
             {orders.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">📦</div>
+                <div className="empty-icon">&#128230;</div>
                 <p>You haven't placed any orders yet</p>
                 <button
                   className="browse-button"
@@ -606,7 +602,7 @@ function UserDashboard() {
                             id="notifications"
                             defaultChecked
                           />
-                          <label htmlFor="notifications"></label>
+                          <label htmlFor="notifications" aria-label="Enable notifications">Enable notifications</label>
                         </div>
                       </div>
                       <div className="form-group">

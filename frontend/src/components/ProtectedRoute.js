@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types"; // ✅ Import PropTypes
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 
@@ -17,14 +18,21 @@ function ProtectedRoute({ allowedRoles, children }) {
           setStatus({ loading: false, authorized: false });
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Authorization check failed", err);
         setStatus({ loading: false, authorized: false });
       });
   }, [allowedRoles]);
 
   if (status.loading) return <div>Loading...</div>;
+  if (!status.authorized) return <Navigate to="/unauthorized" replace />;
 
-  return status.authorized ? children : <Navigate to="/dashboard" replace />;
+  return children;
 }
+
+ProtectedRoute.propTypes = {
+  allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export default ProtectedRoute;
