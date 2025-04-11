@@ -64,9 +64,9 @@ db.connect(err => {
 // Configure cookie options
 const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    secure: true, // Use secure cookies in production
     maxAge: 3600000, // 1 hour in milliseconds
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Important for cross-site cookies
+    sameSite: 'strict' // Important for cross-site cookies
 };
 
 passport.use(new GoogleStrategy(
@@ -101,13 +101,13 @@ passport.use(new GoogleStrategy(
                         (err) => {
                             if (err) return done(err);
 
-                            const token = jwt.sign({ id: userId, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+                            const token = jwt.sign({ id: userId, role: user.role }, process.env.JWT_SECRET , { expiresIn: '1h' });
                             done(null, { user, token });
                         }
                     );
                 });
             } else {
-                const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+                const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 done(null, { user, token });
             }
         });
@@ -218,7 +218,7 @@ app.post('/login', (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         
         // Generate JWT token and set it as a cookie
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         console.log("jwt_token : "+ token);
         
         // Updated cookie options for development environment
@@ -235,7 +235,6 @@ app.post('/login', (req, res) => {
         // Also send token in response body as a backup
         res.json({ 
             message: 'Login successful',
-            token: token // Include token in response
         });
     });
 });
