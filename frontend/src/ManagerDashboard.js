@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import "./ManagerDashboard.css";
 
 function ManagerDashboard() {
@@ -11,22 +10,7 @@ function ManagerDashboard() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    } else {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.role !== "manager") {
-          localStorage.removeItem("token");
-          navigate("/login");
-        } else {
-          fetchMockData();
-        }
-      } catch (error) {
-        navigate("/login");
-      }
-    }
+      fetchMockData();
   }, [navigate]);
 
   const fetchMockData = () => {
@@ -112,8 +96,6 @@ function ManagerDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
   };
 
   const handleUpdateStock = (id, newStock) => {

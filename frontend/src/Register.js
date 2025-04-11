@@ -16,8 +16,10 @@ function Register() {
       const container = document.querySelector(".music-notes");
       if (!container) return;
 
-      function uiRandom() {
-        return Math.random();
+      let seedValue = 42;
+      function deterministicRandom() {
+        seedValue = (seedValue * 9301 + 49297) % 233280;
+        return seedValue / 233280;
       }
 
       const noteCount = 20;
@@ -29,10 +31,10 @@ function Register() {
         const note = document.createElement("div");
         note.className = "music-note";
         note.textContent =
-          noteSymbols[Math.floor(uiRandom() * noteSymbols.length)];
-        note.style.left = `${uiRandom() * 100}%`;
-        note.style.animationDuration = `${uiRandom() * 10 + 10}s`;
-        note.style.animationDelay = `${uiRandom() * 5}s`;
+          noteSymbols[Math.floor(deterministicRandom() * noteSymbols.length)];
+        note.style.left = `${deterministicRandom() * 100}%`;
+        note.style.animationDuration = `${deterministicRandom() * 10 + 10}s`;
+        note.style.animationDelay = `${deterministicRandom() * 5}s`;
         container.appendChild(note);
       }
     };
@@ -57,12 +59,26 @@ function Register() {
     setLoading(true);
     try {
       console.log("trying to register");
-      await axios.post("/api/register", user);
-      alert("Registration successful! Please login.");
+      const response = await axios.post(
+        "http://localhost:5000/register",
+        user,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      alert(response.data.message || "Registration successful! Please login.");
       window.location.href = "/login";
     } catch (error) {
       console.error("Registration error:", error);
-      alert("Registration failed. Try again.");
+
+      // Try to show message from backend, else default error
+      const message =
+        error.response?.data?.message || "Registration failed. Try again.";
+      alert(message);
     } finally {
       setLoading(false);
     }

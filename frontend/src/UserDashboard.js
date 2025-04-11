@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "./UserDashboard.css";
 
@@ -20,33 +19,31 @@ function UserDashboard() {
     age: "",
     tel: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    } else {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.role !== "user") {
-          localStorage.removeItem("token");
-          navigate("/login");
-        } else {
-          setUsername(decoded.username || "User");
-          fetchMockData();
 
-          // Fetch user profile data when on profile tab
-          if (activeTab === "profile") {
-            fetchUserProfile(token);
-          }
+    axios.get('http://localhost:5000/auth/me', { withCredentials: true })
+      .then(response => {
+        const username = response.data.username;
+        setUsername(username || 'User')
+        // Redirect based on role
+      })
+      .catch(error => {
+        console.error("User not authenticated", error);
+        navigate('/login');
+      })
+    try {
+        fetchMockData();
+        // Fetch user profile data when on profile tab
+        if (activeTab === 'profile') {
+          fetchUserProfile();
         }
-      } catch (error) {
-        navigate("/login");
       }
+    catch (error) {
     }
     fetchMockData();
   }, [navigate, activeTab]);
@@ -130,20 +127,28 @@ function UserDashboard() {
       },
     ]);
   };
+  axios.get('http://localhost:5000/auth/me', { withCredentials: true })
+      .then(response => {
+        const username = response.data.username;
+        setUsername(username || 'User')
+        // Redirect based on role
+      })
+      .catch(error => {
+        console.error("User not authenticated", error);
+        navigate('/login');
+      })
 
   // Add function to fetch user profile
-  const fetchUserProfile = async (token) => {
-    setLoading(true);
+  const fetchUserProfile = async () => {
+    setLoading(true); 
     try {
-      const response = await axios.get(
-        "https://feenfeenfeen.online/api/user/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axios.get('http://localhost:5000/user/profile', {
+        withCredentials: true,  // Ensures cookies are sent with the request
+        headers: {
+          'Content-Type': 'application/json', // Set the correct content type
         }
-      );
-
+      });
+  
       // Set profile data, handling null values
       const profileData = response.data;
       setProfile({
@@ -173,43 +178,50 @@ function UserDashboard() {
   // Add function to handle profile form submit
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
+    setError('');
+    setSuccess('');
+  
     try {
-      await axios.put("https://feenfeenfeen.online/api/user/profile", profile, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setSuccess("Profile updated successfully!");
-      setIsEditing(false);
+      const response = await axios.put(
+        'http://localhost:5000/user/profile',
+        profile,
+        {
+          withCredentials: true, // This sends the cookie along with the request
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        setSuccess('Profile updated successfully!');
+      }
     } catch (err) {
-      console.error("Failed to update profile:", err);
-      setError("Failed to update profile. Please try again.");
+      console.error('Failed to update profile:', err);
+  
+      if (err.response) {
+        setError(err.response.data?.message || 'Server error. Please try again.');
+      } else if (err.request) {
+        setError('No response from server. Check your network.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
+      
   };
 
   // Function to cancel profile editing
   const handleProfileCancel = () => {
     // Reset to original values by re-fetching
-    const token = localStorage.getItem("token");
-    fetchUserProfile(token);
-    setIsEditing(false);
-    setError("");
-    setSuccess("");
+    fetchUserProfile();
+    setError('');
+    setSuccess('');
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+    axios.get('http://localhost:5000/logout', { withCredentials: true })
+      .then(() => navigate('/login'))
+      .catch(() => navigate('/login'));
   };
 
   const addToCart = (product) => {
@@ -335,9 +347,9 @@ function UserDashboard() {
 
             {cart.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">🛒</div>
+                <div className="empty-icon">&#128722;</div>
                 <p>Your cart is empty</p>
-                <button
+                <button 
                   className="browse-button"
                   onClick={() => setActiveTab("browse")}
                 >
@@ -393,7 +405,7 @@ function UserDashboard() {
 
             {orders.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">📦</div>
+                <div className="empty-icon">&#128230;</div>
                 <p>You haven't placed any orders yet</p>
                 <button
                   className="browse-button"
@@ -590,7 +602,7 @@ function UserDashboard() {
                             id="notifications"
                             defaultChecked
                           />
-                          <label htmlFor="notifications"></label>
+                          <label htmlFor="notifications" aria-label="Enable notifications">Enable notifications</label>
                         </div>
                       </div>
                       <div className="form-group">
