@@ -46,7 +46,9 @@ function handleDisconnect() {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: '',
-        database: process.env.DB_database
+        database: process.env.DB_database,
+        enableKeepAlive: true,          // เพิ่ม keep-alive
+        connectTimeout: 10000 
     });
     console.log("connecting to database");
 
