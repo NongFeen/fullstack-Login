@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const mysql = require('mysql2');
@@ -17,13 +16,18 @@ const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(cors({
+    origin: process.env.WEBURL,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+  }));
 // CORS configuration - set up before any routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin',  process.env.WEBURL);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  credentials: true // <-- very important
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -258,15 +262,16 @@ app.get('/dashboard', verifyToken, (req, res) => {
 });
 
 app.get('/user/profile', verifyToken, (req, res) => {
-    const { id } = req.user;  // Extracting `id` from the JWT payload
+    const email = req.user.username; // 'username' from JWT payload (used as email)
   
     db.query(
-      'SELECT * FROM user_profiles WHERE user_id = ?',
-      [id],  // Use `id` from the JWT payload
+      'SELECT * FROM user_profiles WHERE email = ?',
+      [email],
       (err, results) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         if (results.length === 0) return res.status(404).json({ error: 'Profile not found' });
-        res.json(results[0]); // Return the user profile
+  
+        res.json(results[0]); // Return user profile info
       }
     );
   });
@@ -316,8 +321,8 @@ app.get('/redirect-dashboard', verifyToken, (req, res) => {
 app.get('/auth/me', verifyToken, (req, res) => {
     console.log("retive you own data");
     try {
-        const { role, id, username } = req.user;
-        res.json({ role, id, username });
+        const { role, username } = req.user;
+        res.json({ role, username });
         
     } catch (error) {
         console.log("retive you own data");

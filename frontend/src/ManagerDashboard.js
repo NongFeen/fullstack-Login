@@ -11,20 +11,7 @@ function ManagerDashboard() {
   const [stats, setStats] = useState({});
 
   useEffect(() => {
-    if (!token) {
-    } else {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.role !== 'manager') {
-          localStorage.removeItem('token');
-          // navigate('/login');
-        } else {
-          fetchMockData();
-        }
-      } catch (error) {
-        // navigate('/login');
-      }
-    }
+      fetchMockData();
   }, [navigate]);
 
   const fetchMockData = () => {
