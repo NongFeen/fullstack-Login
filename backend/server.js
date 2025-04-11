@@ -349,6 +349,4 @@ app.get('/auth/me', verifyToken, (req, res) => {
     res.json({ role, id, username });
 });
 
-
-
 app.listen(5000, () => console.log("Server running on port 5000"));
