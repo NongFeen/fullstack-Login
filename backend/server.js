@@ -101,7 +101,7 @@ passport.use(new GoogleStrategy(
                         (err) => {
                             if (err) return done(err);
 
-                            const token = jwt.sign({ username: email, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
+                            const token = jwt.sign({ id: userId, role: user.role }, process.env.JWT_SECRET || 'your-fallback-secret', { expiresIn: '1h' });
                             done(null, { user, token });
                         }
                     );
