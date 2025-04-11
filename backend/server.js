@@ -41,21 +41,50 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+function handleDisconnect() {
+    db = mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: '',
+        database: process.env.DB_database
+    });
+    console.log("connecting to database");
+
+    db.connect(err => {
+        if (err) {
+            console.error('Reconnect failed, retrying...', err);
+            setTimeout(handleDisconnect, 2000);
+        } else {
+            console.log("MySQL Reconnected...");
+        }
+    });
+
+    db.on('error', err => {
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.log("MySQL connection lost. Reconnecting...");
+            handleDisconnect();
+        } else {
+            throw err;
+        }
+    });
+}
+handleDisconnect();
+
 // Database Connection
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: '',
-    database: process.env.DB_database
-});
-console.log("connecting to database");
-db.connect(err => {
-    if (err) {
-        console.error('Database connection failed:', err);
-        return;
-    }
-    console.log("MySQL Connected...");
-});
+// const db = mysql.createConnection({
+//     host: process.env.DB_HOST,
+//     user: process.env.DB_USER,
+//     password: '',
+//     database: process.env.DB_database
+// });
+// console.log("connecting to database");
+// db.connect(err => {
+//     if (err) {
+//         console.error('Database connection failed:', err);
+//         return;
+//     }
+//     console.log("MySQL Connected...");
+// });
 
 // Configure cookie options
 const cookieOptions = {
@@ -317,4 +346,7 @@ app.get('/auth/me', verifyToken, (req, res) => {
     const { role, id, username } = req.user;
     res.json({ role, id, username });
 });
+
+
+
 app.listen(5000, () => console.log("Server running on port 5000"));
